@@ -1,0 +1,344 @@
+<div id="page-wrapper">
+
+  <!-- Page Heading -->
+          <div class="row">
+              <div class="col-lg-8" >
+                  <h2 class="page-header" >
+                    센서 세팅:
+                        <%=data2.rule1%>
+                      민감도:
+                        <%=data2.range1%>
+
+                  </h2>
+
+                  <ol class="breadcrumb">
+                      <li class="active">
+                          <i class="fa fa-road"></i> 정보
+                      </li>
+                  </ol>
+              </div>
+              <div class="col-lg-2" style="padding-top:3%">
+              <div id="color" class="panel panel-green">
+                  <div class="panel-heading">
+                      <div class="row">
+                          <div class="col-xs-3">
+                            <div id ="emoticon">
+                              <i class="fa fa-smile-o fa-3x"></i>
+                          </div>
+                        </div>
+                          <div class="col-xs-9 text-center">
+                              <div id="text"class="huge1">양호</div>
+                              <div></div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <a id="BTN" style="cursor:pointer;">
+                      <div class="panel-footer">
+                          <span id="test7" class="pull-left"></span>
+                          <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                          <div id="help"class="clearfix"></div>
+                      </div>
+                  </a>
+              </div>
+            </div>
+          </div>
+<div style="width:85%;">
+    <canvas id="canvas"></canvas>
+</div>
+<br>
+<br>
+
+<button id ="interval1">주기1</button>
+<button id ="interval2">주기2</button>
+<button id ="interval3">주기3</button>
+<button id ="interval4">주기4</button>
+<button id ="interval5">주기5</button>
+
+
+<script>
+    var config = {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+            {
+                borderColor : "#FF4848",
+                backgroundColor : "#FF4848",
+                pointBorderColor : "#FF4848",
+                pointBackgroundColor :"#FF4848",
+                pointBorderWidth : 1,
+                label: "1번 감지기",
+                data: [],
+                lineTension: 0,
+                fill: false,
+            },
+            {
+
+                borderColor : "#FF5E00",
+                backgroundColor : "#FF5E00",
+                pointBorderColor : "#FF5E00",
+                pointBackgroundColor :"#FF5E00",
+                pointBorderWidth : 1,
+                label: "2번 감지기",
+                data: [],
+                lineTension: 0,
+                fill: false,
+            },
+            {
+                borderColor : "#FFE400",
+                backgroundColor : "#FFE400",
+                pointBorderColor : "#FFE400",
+                pointBackgroundColor :"#FFE400",
+                pointBorderWidth : 1,
+                label: "3번 감지기",
+                data: [],
+                lineTension: 0,
+                fill: false,
+            },
+            {
+                borderColor : "#47C83E",
+                backgroundColor : "#47C83E",
+                pointBorderColor : "#47C83E",
+                pointBackgroundColor :"#47C83E",
+                pointBorderWidth : 1,
+                label: "4번 감지기",
+                data: [],
+                lineTension: 0,
+                fill: false,
+            },
+            {
+                borderColor : "#4374D9",
+                backgroundColor : "#4374D9",
+                pointBorderColor : "#4374D9",
+                pointBackgroundColor :"#4374D9",
+                pointBorderWidth : 1,
+                label: "5번 감지기",
+                data: [],
+                lineTension: 0,
+                fill: false,
+            },
+           ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom',
+            },
+            hover: {
+                mode: 'label'
+            },
+            scales: {
+                xAxes: [{
+
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: '시간'
+                    }
+                }],
+                yAxes: [{
+                    ticks:{
+                      suggestedMax: 100,
+                      beginAtZero: true
+                    },
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: '위험도'
+                    }
+                }]
+            },
+            title: {
+                display: true
+            }
+        }
+    };
+
+
+
+    window.onload = function() {
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx, config);
+    };
+
+
+
+</script>
+
+
+
+
+<script src="/socket.io/socket.io.js"></script>
+
+
+
+
+
+<script>
+
+var socket = io.connect("http://localhost:3000");
+var audio = new Audio();
+audio.src='/audio/alert.mp3';
+var alert_cnt=0;
+
+var color = $("#color");
+var emoticon =$("#emoticon i");
+var size = $("#size");
+var text1 = $("#text");
+var alaram1 = $("#help");
+socket.on('news',function (alaram,dbprevData,nowtime) {
+  //console.log(alaram);
+  //console.log(dbprevData[0].beacon001);
+
+  if(dbprevData!=undefined){
+
+  for(var i=0;i<20;i++){
+    config.data.labels[i]=(dbprevData[i].rectime);;
+    config.data.datasets[0].data[i]=(dbprevData[i].beacon001);
+    config.data.datasets[1].data[i]=(dbprevData[i].beacon002);
+    config.data.datasets[2].data[i]=(dbprevData[i].beacon003);
+    config.data.datasets[3].data[i]=(dbprevData[i].beacon004);
+    config.data.datasets[4].data[i]=(dbprevData[i].beacon005);
+  }
+}
+
+  if(alaram!=""){
+    //alert_cnt=1;
+    color.removeClass("panel-green");
+    color.addClass("panel-red");
+    emoticon.removeClass("fa fa-smile-o");
+    emoticon.addClass("fa fa-meh-o");
+    text1.text("경고");
+    alaram1.text(alaram);
+    audio.play();
+
+  }
+
+ if(alaram==""){
+  // alert_cnt=0;
+  alaram1.text('');
+  color.removeClass("panel-red");
+  color.addClass("panel-green");
+  emoticon.removeClass("fa fa-meh-o");
+  emoticon.addClass("fa fa-smile-o");
+  text1.text("양호");
+  audio.pause();
+  }
+
+  //console.log(data4);
+})
+
+
+
+
+///@@@@@@@@@여기야
+
+var message;
+$('#interval1').click(function () {
+  message="1";
+  socket.emit('intervalEV',message);
+  console.log('누름');
+});
+
+$('#interval2').click(function () {
+  message="2";
+  socket.emit('intervalEV',message);
+  console.log('누름');
+});
+$('#interval3').click(function () {
+  message="3";
+  socket.emit('intervalEV',message);
+  console.log('누름');
+});
+$('#interval4').click(function () {
+  message="4";
+  socket.emit('intervalEV',message);
+  console.log('누름');
+});
+$('#interval5').click(function () {
+  message="5";
+  socket.emit('intervalEV',message);
+  console.log('누름');
+});
+
+//////////여기야
+
+
+
+
+
+
+socket.on('chat message',function (recieveArray,alaram) {
+  console.log("chat message: ",recieveArray[0],alaram);
+  console.log("알람"+alaram);
+
+
+
+
+
+  if(alaram!=""){
+    alert_cnt=1;
+    color.removeClass("panel-green");
+    color.addClass("panel-red");
+    emoticon.removeClass("fa fa-smile-o");
+    emoticon.addClass("fa fa-meh-o");
+    text1.text("경고");
+    alaram1.text(alaram);
+
+  }
+
+ if(alaram==""){
+   alert_cnt=0;
+  alaram1.text('');
+  color.removeClass("panel-red");
+  color.addClass("panel-green");
+  emoticon.removeClass("fa fa-meh-o");
+  emoticon.addClass("fa fa-smile-o");
+  text1.text("양호");
+
+  }
+
+  if(alert_cnt==1){
+    audio.play();
+  }
+  if(alert_cnt==0){
+    audio.pause();
+  }
+  if (config.data.datasets.length > 0) {
+
+            var now = new Date();
+            var hour = now.getHours();
+            var min = now.getMinutes();
+            var second = now.getSeconds();
+            config.data.labels.push(hour+":"+min+":"+second);
+
+            if(config.data.labels.length==21){
+              config.data.labels.shift(0,21);
+              config.data.datasets[0].data.shift(0,20);
+              config.data.datasets[0].data.push(recieveArray[0]);
+              config.data.datasets[1].data.push(recieveArray[1]);
+              config.data.datasets[2].data.push(recieveArray[2]);
+              config.data.datasets[3].data.push(recieveArray[3]);
+              config.data.datasets[4].data.push(recieveArray[4]);
+
+            }
+            else{
+              config.data.datasets[0].data.push(recieveArray[0]);
+              config.data.datasets[1].data.push(recieveArray[1]);
+              config.data.datasets[2].data.push(recieveArray[2]);
+              config.data.datasets[3].data.push(recieveArray[3]);
+              config.data.datasets[4].data.push(recieveArray[4]);
+
+          }
+            window.myLine.update();
+        }
+
+});
+
+
+
+</script>
+
+<!-- /#page-wrapper -->
+</div>

@@ -1,0 +1,353 @@
+<div id="page-wrapper">
+
+  <!-- Page Heading -->
+          <div class="row">
+              <div class="col-lg-12">
+                  <h1 class="page-header">
+                      <b>감지기 설정</b>
+                  </h1>
+                  <ol class="breadcrumb">
+                      <li class="active">
+                          <i class="fa fa-gaer"></i> 설정
+                      </li>
+                  </ol>
+              </div>
+          </div>
+<div >
+<h5><b>(1)번 감지기</b></h5>
+
+
+<form id="standardform1" name="standardform1" method="POST" action="/input1">
+<h5>센서 세팅:
+<input type ="checkbox" style="width:25px;height:25px;" id="ruleid1" name="ruleid1" value="on" onclick="stsubmit1()"/>세팅값 적용
+<i class=" fa fa-long-arrow-right"></i>
+<script>
+  function stsubmit1() {
+      standardform1.submit();
+  }
+</script>
+</form>
+<%= data_1.rule001 %>
+</h5>
+<div id="test">
+
+</div>
+
+<div class="form-group">
+
+  <div>
+    <h5>
+    <form id="ruleform1" name="ruleform1" method="POST" action="/input1">
+    민감도 :
+    <input type ="radio" style="width:25px;height:25px;" id="range1-1" name="range1" value="매우민감"  onclick="rulesubmit1()"/>매우민감
+    <input type ="radio" style="width:25px;height:25px;" id="range1-2" name="range1" value="민감"  onclick="rulesubmit1()"/>민감
+    <input type ="radio" style="width:25px;height:25px;" id="range1-3" name="range1" value="보통"   onclick="rulesubmit1()"/>보통
+    <input type ="radio" style="width:25px;height:25px;" id="range1-4" name="range1" value="둔감"  onclick="rulesubmit1()"/>둔감
+    <input type ="radio" style="width:25px;height:25px;" id="range1-5" name="range1" value="매우둔감"  onclick="rulesubmit1()"/>매우둔감
+  </div>
+  </h5>
+  <script>
+    var dao = "<%=data_1.range001%>"
+    var check1_1 = document.getElementById("range1-1");
+    var check1_2 = document.getElementById("range1-2");
+    var check1_3 = document.getElementById("range1-3");
+    var check1_4 = document.getElementById("range1-4");
+    var check1_5 = document.getElementById("range1-5");
+    if(dao=="매우민감"){
+      check1_1.checked=true;
+    }
+    if(dao=="민감"){
+      check1_2.checked=true;
+    }
+    if(dao=="보통"){
+      check1_3.checked=true;
+    }
+    if(dao=="둔감"){
+      check1_4.checked=true;
+    }
+    if(dao=="매우둔감"){
+      check1_5.checked=true;
+    }
+
+
+    function rulesubmit1() {
+      ruleform1.submit();
+    }
+  </script>
+  </form>
+
+
+    </div>
+  </div>
+
+  <div >
+  <h5><b>(2)번 감지기</b></h5>
+
+  <form id="standardform2" name="standardform2" method="POST" action="/input2">
+  <h5>센서 세팅:
+  <input type ="checkbox" style="width:25px;height:25px;" id="ruleid2" name="ruleid2" value="on" onclick="stsubmit2()"/>세팅값 적용
+  <i class=" fa fa-long-arrow-right"></i>
+  <script>
+    function stsubmit2() {
+        standardform2.submit();
+    }
+  </script>
+  </form>
+  <%= data_2.rule002 %>
+  </h5>
+  <div id="test">
+
+  </div>
+
+  <div class="form-group">
+
+    <div>
+      <h5>
+      <form id="ruleform2" name="ruleform2" method="POST" action="/input2">
+      민감도 :
+      <input type ="radio" style="width:25px;height:25px;" id="range2-1" name="range2" value="매우민감" onclick="rulesubmit2()"/>매우민감
+      <input type ="radio" style="width:25px;height:25px;" id="range2-2" name="range2" value="민감" onclick="rulesubmit2()"/>민감
+      <input type ="radio" style="width:25px;height:25px;" id="range2-3" name="range2" value="보통" onclick="rulesubmit2()"/>보통
+      <input type ="radio" style="width:25px;height:25px;" id="range2-4" name="range2" value="둔감" onclick="rulesubmit2()"/>둔감
+      <input type ="radio" style="width:25px;height:25px;" id="range2-5" name="range2" value="매우둔감" onclick="rulesubmit2()"/>매우둔감
+    </div>
+    </h5>
+    <script>
+    var dao2 = "<%=data_2.range002%>"
+    var check2_1 = document.getElementById("range2-1");
+    var check2_2 = document.getElementById("range2-2");
+    var check2_3 = document.getElementById("range2-3");
+    var check2_4 = document.getElementById("range2-4");
+    var check2_5 = document.getElementById("range2-5");
+    if(dao2=="매우민감"){
+      check2_1.checked=true;
+    }
+    if(dao2=="민감"){
+      check2_2.checked=true;
+    }
+    if(dao2=="보통"){
+      check2_3.checked=true;
+    }
+    if(dao2=="둔감"){
+      check2_4.checked=true;
+    }
+    if(dao2=="매우둔감"){
+      check2_5.checked=true;
+    }
+      function rulesubmit2() {
+        ruleform2.submit();
+      }
+    </script>
+    </form>
+
+
+      </div>
+    </div>
+
+
+    <div >
+      <h5><b>(3)번 감지기</b></h5>
+
+      <form id="standardform3" name="standardform3" method="POST" action="/input3">
+      <h5>센서 세팅:
+      <input type ="checkbox" style="width:25px;height:25px;" id="ruleid3" name="ruleid3" value="on" onclick="stsubmit3()"/>세팅값 적용
+      <i class=" fa fa-long-arrow-right"></i>
+      <script>
+        function stsubmit3() {
+            standardform3.submit();
+        }
+      </script>
+      </form>
+      <%= data_3.rule003 %>
+      </h5>
+      <div id="test">
+
+      </div>
+
+      <div class="form-group">
+
+        <div>
+          <h5>
+          <form id="ruleform3" name="ruleform3" method="POST" action="/input3">
+          민감도 :
+          <input type ="radio" style="width:25px;height:25px;" id="range3-1" name="range3" value="매우민감" onclick="rulesubmit3()"/>매우민감
+          <input type ="radio" style="width:25px;height:25px;" id="range3-2" name="range3" value="민감" onclick="rulesubmit3()"/>민감
+          <input type ="radio" style="width:25px;height:25px;" id="range3-3" name="range3" value="보통" onclick="rulesubmit3()"/>보통
+          <input type ="radio" style="width:25px;height:25px;" id="range3-4" name="range3" value="둔감" onclick="rulesubmit3()"/>둔감
+          <input type ="radio" style="width:25px;height:25px;" id="range3-5" name="range3" value="매우둔감" onclick="rulesubmit3()"/>매우둔감
+        </div>
+        </h5>
+        <script>
+        var dao3 = "<%=data_3.range003%>"
+
+        var check3_1 = document.getElementById("range3-1");
+        var check3_2 = document.getElementById("range3-2");
+        var check3_3 = document.getElementById("range3-3");
+        var check3_4 = document.getElementById("range3-4");
+        var check3_5 = document.getElementById("range3-5");
+        if(dao3=="매우민감"){
+          check3_1.checked=true;
+        }
+        if(dao3=="민감"){
+          check3_2.checked=true;
+        }
+        if(dao3=="보통"){
+          check3_3.checked=true;
+        }
+        if(dao3=="둔감"){
+          check3_4.checked=true;
+        }
+        if(dao3=="매우둔감"){
+          check3_5.checked=true;
+        }
+          function rulesubmit3() {
+            ruleform3.submit();
+          }
+        </script>
+        </form>
+
+
+        </div>
+      </div>
+
+
+
+      <div >
+      <h5><b>(4)번 감지기</b></h5>
+
+      <form id="standardform4" name="standardform4" method="POST" action="/input4">
+      <h5>센서 세팅:
+      <input type ="checkbox" style="width:25px;height:25px;" id="ruleid4" name="ruleid4" value="on" onclick="stsubmit4()"/>세팅값 적용
+      <i class=" fa fa-long-arrow-right"></i>
+      <script>
+
+        function stsubmit4() {
+            standardform4.submit();
+        }
+      </script>
+      </form>
+      <%= data_4.rule004 %>
+      </h5>
+      <div id="test">
+
+      </div>
+
+      <div class="form-group">
+
+        <div>
+          <h5>
+          <form id="ruleform4" name="ruleform4" method="POST" action="/input4">
+          민감도 :
+          <input type ="radio" style="width:25px;height:25px;" id="range4-1" name="range4" value="매우민감" onclick="rulesubmit4()"/>매우민감
+          <input type ="radio" style="width:25px;height:25px;" id="range4-2" name="range4" value="민감" onclick="rulesubmit4()"/>민감
+          <input type ="radio" style="width:25px;height:25px;" id="range4-3" name="range4" value="보통" onclick="rulesubmit4()"/>보통
+          <input type ="radio" style="width:25px;height:25px;" id="range4-4" name="range4" value="둔감" onclick="rulesubmit4()"/>둔감
+          <input type ="radio" style="width:25px;height:25px;" id="range4-5" name="range4" value="매우둔감" onclick="rulesubmit4()"/>매우둔감
+        </div>
+        </h5>
+        <script>
+        var dao4 = "<%=data_4.range004%>"
+
+        var check4_1 = document.getElementById("range4-1");
+        var check4_2 = document.getElementById("range4-2");
+        var check4_3 = document.getElementById("range4-3");
+        var check4_4 = document.getElementById("range4-4");
+        var check4_5 = document.getElementById("range4-5");
+        if(dao4=="매우민감"){
+          check4_1.checked=true;
+        }
+        if(dao4=="민감"){
+          check4_2.checked=true;
+        }
+        if(dao4=="보통"){
+          check4_3.checked=true;
+        }
+        if(dao4=="둔감"){
+          check4_4.checked=true;
+        }
+        if(dao4=="매우둔감"){
+          check4_5.checked=true;
+        }
+          function rulesubmit4() {
+            ruleform4.submit();
+          }
+        </script>
+        </form>
+
+
+          </div>
+        </div>
+
+
+        <div >
+        <h5><b>(5)번 감지기</b></h5>
+
+        <form id="standardform5" name="standardform5" method="POST" action="/input5">
+        <h5>센서 세팅:
+        <input type ="checkbox" style="width:25px;height:25px;" id="ruleid5" name="ruleid5" value="on" onclick="stsubmit5()"/>세팅값 적용
+        <i class=" fa fa-long-arrow-right"></i>
+        <script>
+          function stsubmit5() {
+              standardform5.submit();
+          }
+        </script>
+        </form>
+        <%= data_5.rule005 %>
+        </h5>
+        <div id="test">
+
+        </div>
+
+        <div class="form-group">
+
+          <div>
+            <h5>
+            <form id="ruleform5" name="ruleform5" method="POST" action="/input5">
+            민감도 :
+            <input type ="radio" style="width:25px;height:25px;" id="range5-1" name="range5" value="매우민감" onclick="rulesubmit5()"/>매우민감
+            <input type ="radio" style="width:25px;height:25px;" id="range5-2" name="range5" value="민감" onclick="rulesubmit5()"/>민감
+            <input type ="radio" style="width:25px;height:25px;" id="range5-3" name="range5" value="보통" onclick="rulesubmit5()"/>보통
+            <input type ="radio" style="width:25px;height:25px;" id="range5-4" name="range5" value="둔감" onclick="rulesubmit5()"/>둔감
+            <input type ="radio" style="width:25px;height:25px;" id="range5-5" name="range5" value="매우둔감" onclick="rulesubmit5()"/>매우둔감
+          </div>
+          </h5>
+          <script>
+          var dao5 = "<%=data_5.range005%>"
+
+          var check5_1 = document.getElementById("range5-1");
+          var check5_2 = document.getElementById("range5-2");
+          var check5_3 = document.getElementById("range5-3");
+          var check5_4 = document.getElementById("range5-4");
+          var check5_5 = document.getElementById("range5-5");
+          if(dao5=="매우민감"){
+            check5_1.checked=true;
+          }
+          if(dao5=="민감"){
+            check5_2.checked=true;
+          }
+          if(dao5=="보통"){
+            check5_3.checked=true;
+          }
+          if(dao5=="둔감"){
+            check5_4.checked=true;
+          }
+          if(dao5=="매우둔감"){
+            check5_5.checked=true;
+          }
+            function rulesubmit5() {
+              ruleform5.submit();
+            }
+          </script>
+          </form>
+
+
+            </div>
+          </div>
+
+
+
+          
+
+
+<!-- /#page-wrapper -->
+</div>
