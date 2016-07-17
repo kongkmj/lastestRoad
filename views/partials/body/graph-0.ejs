@@ -4,10 +4,7 @@
           <div class="row">
               <div class="col-lg-8" >
                   <h2 class="page-header" >
-                    센서 세팅:
-                        <%=data2.rule1%>
-                      민감도:
-                        <%=data2.range1%>
+
 
                   </h2>
 
@@ -55,8 +52,177 @@
 <button id ="interval4">주기4</button>
 <button id ="interval5">주기5</button>
 
+<script src="/socket.io/socket.io.js"></script>
 
 <script>
+
+var socket = io.connect("http://localhost:3000");
+var audio = new Audio();
+audio.src='/audio/alert.mp3';
+var alert_cnt=0;
+
+var color = $("#color");
+var emoticon =$("#emoticon i");
+var size = $("#size");
+var text1 = $("#text");
+var alaram1 = $("#help");
+
+console.log("스크립트 로드");
+
+
+
+
+///@@@@@@@@@여기야
+
+var message;
+$('#interval1').click(function () {
+  message="1";
+  socket.emit('intervalEV',message);
+  console.log('누름');
+});
+
+$('#interval2').click(function () {
+  message="2";
+  socket.emit('intervalEV',message);
+  console.log('누름');
+});
+$('#interval3').click(function () {
+  message="3";
+  socket.emit('intervalEV',message);
+  console.log('누름');
+});
+$('#interval4').click(function () {
+  message="4";
+  socket.emit('intervalEV',message);
+  console.log('누름');
+});
+$('#interval5').click(function () {
+  message="5";
+  socket.emit('intervalEV',message);
+  console.log('누름');
+});
+
+//////////여기야
+
+
+
+
+socket.on('news',function (alaram,dbprevData) {
+  console.log(alaram);
+  //console.log(dbprevData);
+  //console.log(config.data.datasets[0].data[0]);
+  console.log("소켓 이벤트 발생");
+
+  for(var i=0;i<20;i++){
+    config.data.labels[i]=(dbprevData[i].rectime);
+    config.data.datasets[0].data[i]=(dbprevData[i].beacon001);
+    config.data.datasets[1].data[i]=(dbprevData[i].beacon002);
+    config.data.datasets[2].data[i]=(dbprevData[i].beacon003);
+    config.data.datasets[3].data[i]=(dbprevData[i].beacon004);
+    config.data.datasets[4].data[i]=(dbprevData[i].beacon005);
+
+  }
+
+  if(!hasChart){
+    initChart();
+  }
+
+  if(alaram!=""){
+    //alert_cnt=1;
+    color.removeClass("panel-green");
+    color.addClass("panel-red");
+    emoticon.removeClass("fa fa-smile-o");
+    emoticon.addClass("fa fa-meh-o");
+    text1.text("경고");
+    alaram1.text(alaram);
+    audio.play();
+
+  }
+
+ if(alaram==""){
+  // alert_cnt=0;
+  alaram1.text('');
+  color.removeClass("panel-red");
+  color.addClass("panel-green");
+  emoticon.removeClass("fa fa-meh-o");
+  emoticon.addClass("fa fa-smile-o");
+  text1.text("양호");
+  audio.pause();
+  }
+
+  //console.log(data4);
+})
+
+
+socket.on('chat message',function (recieveArray,alaram) {
+  console.log("chat message: ",recieveArray[0],alaram);
+  console.log("알람"+alaram);
+
+
+
+
+
+  if(alaram!=""){
+    alert_cnt=1;
+    color.removeClass("panel-green");
+    color.addClass("panel-red");
+    emoticon.removeClass("fa fa-smile-o");
+    emoticon.addClass("fa fa-meh-o");
+    text1.text("경고");
+    alaram1.text(alaram);
+
+  }
+
+ if(alaram==""){
+   alert_cnt=0;
+  alaram1.text('');
+  color.removeClass("panel-red");
+  color.addClass("panel-green");
+  emoticon.removeClass("fa fa-meh-o");
+  emoticon.addClass("fa fa-smile-o");
+  text1.text("양호");
+
+  }
+
+  if(alert_cnt==1){
+    audio.play();
+  }
+  if(alert_cnt==0){
+    audio.pause();
+  }
+  if (config.data.datasets.length > 0) {
+
+            var now = new Date();
+            var hour = now.getHours();
+            var min = now.getMinutes();
+            var second = now.getSeconds();
+            config.data.labels.push(hour+":"+min+":"+second);
+
+            if(config.data.labels.length==21){
+              config.data.labels.shift(0,21);
+              config.data.datasets[0].data.shift(0,20);
+              config.data.datasets[0].data.push(recieveArray[0]);
+              config.data.datasets[1].data.push(recieveArray[1]);
+              config.data.datasets[2].data.push(recieveArray[2]);
+              config.data.datasets[3].data.push(recieveArray[3]);
+              config.data.datasets[4].data.push(recieveArray[4]);
+
+            }
+            else{
+              config.data.datasets[0].data.push(recieveArray[0]);
+              config.data.datasets[1].data.push(recieveArray[1]);
+              config.data.datasets[2].data.push(recieveArray[2]);
+              config.data.datasets[3].data.push(recieveArray[3]);
+              config.data.datasets[4].data.push(recieveArray[4]);
+
+          }
+            window.myLine.update();
+        }
+
+});
+
+
+
     var config = {
         type: 'line',
         data: {
@@ -155,21 +321,22 @@
         }
     };
 
-
-
-    window.onload = function() {
-        var ctx = document.getElementById("canvas").getContext("2d");
-        window.myLine = new Chart(ctx, config);
+    var hasChart = false;
+    var initChart = function(){
+      console.log("그래프 로드1");
+      var ctx = document.getElementById("canvas").getContext("2d");
+      window.myLine = new Chart(ctx, config);
+      console.log("그래프 로드2");
+      hasChart = true;
+      //  console.log(config.data.datasets[0]);
     };
 
 
+    window.onload = function() {
+
+    };
 
 </script>
-
-
-
-
-<script src="/socket.io/socket.io.js"></script>
 
 
 
@@ -177,164 +344,6 @@
 
 <script>
 
-var socket = io.connect("http://localhost:3000");
-var audio = new Audio();
-audio.src='/audio/alert.mp3';
-var alert_cnt=0;
-
-var color = $("#color");
-var emoticon =$("#emoticon i");
-var size = $("#size");
-var text1 = $("#text");
-var alaram1 = $("#help");
-socket.on('news',function (alaram,dbprevData,nowtime) {
-  //console.log(alaram);
-  //console.log(dbprevData[0].beacon001);
-
-  if(dbprevData!=undefined){
-
-  for(var i=0;i<20;i++){
-    config.data.labels[i]=(dbprevData[i].rectime);;
-    config.data.datasets[0].data[i]=(dbprevData[i].beacon001);
-    config.data.datasets[1].data[i]=(dbprevData[i].beacon002);
-    config.data.datasets[2].data[i]=(dbprevData[i].beacon003);
-    config.data.datasets[3].data[i]=(dbprevData[i].beacon004);
-    config.data.datasets[4].data[i]=(dbprevData[i].beacon005);
-  }
-}
-
-  if(alaram!=""){
-    //alert_cnt=1;
-    color.removeClass("panel-green");
-    color.addClass("panel-red");
-    emoticon.removeClass("fa fa-smile-o");
-    emoticon.addClass("fa fa-meh-o");
-    text1.text("경고");
-    alaram1.text(alaram);
-    audio.play();
-
-  }
-
- if(alaram==""){
-  // alert_cnt=0;
-  alaram1.text('');
-  color.removeClass("panel-red");
-  color.addClass("panel-green");
-  emoticon.removeClass("fa fa-meh-o");
-  emoticon.addClass("fa fa-smile-o");
-  text1.text("양호");
-  audio.pause();
-  }
-
-  //console.log(data4);
-})
-
-
-
-
-///@@@@@@@@@여기야
-
-var message;
-$('#interval1').click(function () {
-  message="1";
-  socket.emit('intervalEV',message);
-  console.log('누름');
-});
-
-$('#interval2').click(function () {
-  message="2";
-  socket.emit('intervalEV',message);
-  console.log('누름');
-});
-$('#interval3').click(function () {
-  message="3";
-  socket.emit('intervalEV',message);
-  console.log('누름');
-});
-$('#interval4').click(function () {
-  message="4";
-  socket.emit('intervalEV',message);
-  console.log('누름');
-});
-$('#interval5').click(function () {
-  message="5";
-  socket.emit('intervalEV',message);
-  console.log('누름');
-});
-
-//////////여기야
-
-
-
-
-
-
-socket.on('chat message',function (recieveArray,alaram) {
-  console.log("chat message: ",recieveArray[0],alaram);
-  console.log("알람"+alaram);
-
-
-
-
-
-  if(alaram!=""){
-    alert_cnt=1;
-    color.removeClass("panel-green");
-    color.addClass("panel-red");
-    emoticon.removeClass("fa fa-smile-o");
-    emoticon.addClass("fa fa-meh-o");
-    text1.text("경고");
-    alaram1.text(alaram);
-
-  }
-
- if(alaram==""){
-   alert_cnt=0;
-  alaram1.text('');
-  color.removeClass("panel-red");
-  color.addClass("panel-green");
-  emoticon.removeClass("fa fa-meh-o");
-  emoticon.addClass("fa fa-smile-o");
-  text1.text("양호");
-
-  }
-
-  if(alert_cnt==1){
-    audio.play();
-  }
-  if(alert_cnt==0){
-    audio.pause();
-  }
-  if (config.data.datasets.length > 0) {
-
-            var now = new Date();
-            var hour = now.getHours();
-            var min = now.getMinutes();
-            var second = now.getSeconds();
-            config.data.labels.push(hour+":"+min+":"+second);
-
-            if(config.data.labels.length==21){
-              config.data.labels.shift(0,21);
-              config.data.datasets[0].data.shift(0,20);
-              config.data.datasets[0].data.push(recieveArray[0]);
-              config.data.datasets[1].data.push(recieveArray[1]);
-              config.data.datasets[2].data.push(recieveArray[2]);
-              config.data.datasets[3].data.push(recieveArray[3]);
-              config.data.datasets[4].data.push(recieveArray[4]);
-
-            }
-            else{
-              config.data.datasets[0].data.push(recieveArray[0]);
-              config.data.datasets[1].data.push(recieveArray[1]);
-              config.data.datasets[2].data.push(recieveArray[2]);
-              config.data.datasets[3].data.push(recieveArray[3]);
-              config.data.datasets[4].data.push(recieveArray[4]);
-
-          }
-            window.myLine.update();
-        }
-
-});
 
 
 

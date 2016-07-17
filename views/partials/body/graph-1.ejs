@@ -98,80 +98,9 @@
               </div>
               <!-- /.col-lg-12 -->
           </div>
-<script>
-    var config = {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [
-            {
-                label: "1번 감지기",
-                data: [],
-                lineTension: 0,
-                fill: false,
-            }, ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                position: 'bottom',
-            },
-            hover: {
-                mode: 'label'
-            },
-            scales: {
-                xAxes: [{
-
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: '시간'
-                    }
-                }],
-                yAxes: [{
-                    ticks:{
-                      suggestedMax: 100,
-                      beginAtZero: true
-                    },
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: '위험도'
-                    }
-                }]
-            },
-            title: {
-                display: true
-            }
-        }
-    };
-    $.each(config.data.datasets, function(i, dataset) {
-        var background = "#FF4848";   //그래프 색상 선택
-        dataset.borderColor = background;
-        dataset.backgroundColor = background;
-        dataset.pointBorderColor = background;
-        dataset.pointBackgroundColor = background;
-        dataset.pointBorderWidth = 1;
-    });
-    window.onload = function() {
-        var ctx = document.getElementById("canvas").getContext("2d");
-        window.myLine = new Chart(ctx, config);
-    };
-
-
-</script>
-
-
-
-
 <script src="/socket.io/socket.io.js"></script>
 
-
-
-
-
 <script>
-
 var socket = io.connect("http://localhost:3000");
 var audio = new Audio();
 audio.src='/audio/alert.mp3';
@@ -182,8 +111,21 @@ var emoticon =$("#emoticon i");
 var size = $("#size");
 var text1 = $("#text");
 var alaram1 = $("#help");
-socket.on('news',function (alaram) {
-  console.log(alaram);
+socket.on('news',function (alaram,dbprevData) {
+
+  for(var i=0;i<20;i++){
+    config.data.labels[i]=(dbprevData[i].rectime);
+    config.data.datasets[0].data[i]=(dbprevData[i].beacon001);
+    //config.data.datasets[1].data[i]=(dbprevData[i].beacon002);
+    //config.data.datasets[2].data[i]=(dbprevData[i].beacon003);
+    //config.data.datasets[3].data[i]=(dbprevData[i].beacon004);
+    //config.data.datasets[4].data[i]=(dbprevData[i].beacon005);
+  }
+
+  if(!hasChart){
+    initChart();
+  }
+
   if(alaram!=""){
     //alert_cnt=1;
     color.removeClass("panel-green");
@@ -206,6 +148,7 @@ socket.on('news',function (alaram) {
   text1.text("양호");
   audio.pause();
   }
+
 })
 
 
@@ -271,6 +214,81 @@ socket.on('chat message',function (recieveArray,alaram) {
 
 
 });
+
+    var config = {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+            {
+                label: "1번 감지기",
+                data: [],
+                lineTension: 0,
+                fill: false,
+            }, ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom',
+            },
+            hover: {
+                mode: 'label'
+            },
+            scales: {
+                xAxes: [{
+
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: '시간'
+                    }
+                }],
+                yAxes: [{
+                    ticks:{
+                      suggestedMax: 100,
+                      beginAtZero: true
+                    },
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: '위험도'
+                    }
+                }]
+            },
+            title: {
+                display: true
+            }
+        }
+    };
+    $.each(config.data.datasets, function(i, dataset) {
+        var background = "#FF4848";   //그래프 색상 선택
+        dataset.borderColor = background;
+        dataset.backgroundColor = background;
+        dataset.pointBorderColor = background;
+        dataset.pointBackgroundColor = background;
+        dataset.pointBorderWidth = 1;
+    });
+    var hasChart = false;
+    var initChart = function(){
+      console.log("그래프 로드1");
+      var ctx = document.getElementById("canvas").getContext("2d");
+      window.myLine = new Chart(ctx, config);
+      console.log("그래프 로드2");
+      hasChart = true;
+      //  console.log(config.data.datasets[0]);
+    };
+    window.onload = function() {
+    };
+
+
+</script>
+
+
+
+<script>
+
+
 
 
 

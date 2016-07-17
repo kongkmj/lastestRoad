@@ -1,53 +1,54 @@
 <div id="page-wrapper">
 
   <!-- Page Heading -->
-  <div class="row">
-      <div class="col-lg-8" >
-          <h2 class="page-header" >
-            센서 세팅:
-                <%=data2.rule005%>
-              민감도:
-                <%=data2.range005%>
+          <div class="row">
+              <div class="col-lg-8" >
+                  <h2 class="page-header" >
+                    센서 세팅:
+                        <%=data2.rule005%>
+                      민감도:
+                        <%=data2.range005%>
 
-          </h2>
+                  </h2>
 
-          <ol class="breadcrumb">
-              <li class="active">
-                  <i class="fa fa-road"></i> 정보
-              </li>
-          </ol>
-      </div>
-      <div class="col-lg-2" style="padding-top:3%">
-      <div id="color" class="panel panel-green">
-          <div class="panel-heading">
-              <div class="row">
-                  <div class="col-xs-3">
-                    <div id ="emoticon">
-                      <i class="fa fa-smile-o fa-3x"></i>
-                  </div>
-                </div>
-                  <div class="col-xs-9 text-center">
-                      <div id="text"class="huge1">양호</div>
-                      <div></div>
-                  </div>
+                  <ol class="breadcrumb">
+                      <li class="active">
+                          <i class="fa fa-road"></i> 정보
+                      </li>
+                  </ol>
               </div>
+              <div class="col-lg-2" style="padding-top:3%">
+              <div id="color" class="panel panel-green">
+                  <div class="panel-heading">
+                      <div class="row">
+                          <div class="col-xs-3">
+                            <div id ="emoticon">
+                              <i class="fa fa-smile-o fa-3x"></i>
+                          </div>
+                        </div>
+                          <div class="col-xs-9 text-center">
+                              <div id="text"class="huge1">양호</div>
+                              <div></div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <a id="BTN" style="cursor:pointer;">
+                      <div class="panel-footer">
+                          <span id="test7" class="pull-left"></span>
+                          <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                          <div id="help"class="clearfix"></div>
+                      </div>
+                  </a>
+              </div>
+            </div>
           </div>
-
-          <a id="BTN" style="cursor:pointer;">
-              <div class="panel-footer">
-                  <span id="test7" class="pull-left"></span>
-                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                  <div id="help"class="clearfix"></div>
-              </div>
-          </a>
-      </div>
-    </div>
-  </div>
 <div style="width:85%;">
     <canvas id="canvas"></canvas>
 </div>
 <br>
 <br>
+
 <div class="row">
               <div class="col-lg-12">
                   <div class="panel panel-default">
@@ -61,12 +62,12 @@
                                   <thead>
                                       <tr>
 
-                                          <th style="width:15%">중계기 번호</th>
-                                          <th style="width:15%">감지기 번호</th>
-                                          <th>변동 수치</th>
-                                          <th>날짜</th>
-                                          <th>시간</th>
-                                          <th>등급</th>
+                                          <th style="width:10%">중계기 번호</th>
+                                          <th style="width:10%">감지기 번호</th>
+                                          <th style="width:20%">변동 수치</th>
+                                          <th style="width:20%">날짜</th>
+                                          <th style="width:20%">시간</th>
+                                          <th style="width:10%">등급</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -77,7 +78,7 @@
 
                                     <td><%=bc005.gnum%></a></td>
                                     <td><%=bc005.bnum%></td>
-                                    <td><%=(Math.abs(bc005.beacon-data2.rule005))%></td>
+                                    <td><%= (Math.abs(bc005.beacon-data2.rule005)) %></td>
                                     <td><%=bc005.createdAt.toLocaleDateString()%></td>
                                     <td><%=bc005.createdAt.toLocaleTimeString()%></td>
                                     <td><div style="text-align:center;"><span class="label label-danger" ><%=bc005.status%></span></div></td>
@@ -97,7 +98,123 @@
               </div>
               <!-- /.col-lg-12 -->
           </div>
+<script src="/socket.io/socket.io.js"></script>
+
 <script>
+var socket = io.connect("http://localhost:3000");
+var audio = new Audio();
+audio.src='/audio/alert.mp3';
+var alert_cnt=0;
+
+var color = $("#color");
+var emoticon =$("#emoticon i");
+var size = $("#size");
+var text1 = $("#text");
+var alaram1 = $("#help");
+socket.on('news',function (alaram,dbprevData) {
+
+  for(var i=0;i<20;i++){
+    config.data.labels[i]=(dbprevData[i].rectime);
+    config.data.datasets[0].data[i]=(dbprevData[i].beacon005);
+    //config.data.datasets[1].data[i]=(dbprevData[i].beacon005);
+    //config.data.datasets[2].data[i]=(dbprevData[i].beacon003);
+    //config.data.datasets[3].data[i]=(dbprevData[i].beacon004);
+    //config.data.datasets[4].data[i]=(dbprevData[i].beacon005);
+  }
+
+  if(!hasChart){
+    initChart();
+  }
+
+  if(alaram!=""){
+    //alert_cnt=1;
+    color.removeClass("panel-green");
+    color.addClass("panel-red");
+    emoticon.removeClass("fa fa-smile-o");
+    emoticon.addClass("fa fa-meh-o");
+    text1.text("경고");
+    alaram1.text(alaram);
+    audio.play();
+
+  }
+
+ if(alaram==""){
+  // alert_cnt=0;
+  alaram1.text('');
+  color.removeClass("panel-red");
+  color.addClass("panel-green");
+  emoticon.removeClass("fa fa-meh-o");
+  emoticon.addClass("fa fa-smile-o");
+  text1.text("양호");
+  audio.pause();
+  }
+
+})
+
+
+
+socket.on('chat message',function (recieveArray,alaram) {
+  console.log("chat message: ",recieveArray[0],alaram);
+  console.log("알람"+alaram);
+
+
+
+  if(alaram!=""){
+    alert_cnt=1;
+    color.removeClass("panel-green");
+    color.addClass("panel-red");
+    emoticon.removeClass("fa fa-smile-o");
+    emoticon.addClass("fa fa-meh-o");
+    text1.text("경고");
+    alaram1.text(alaram);
+
+  }
+
+ if(alaram==""){
+   alert_cnt=0;
+  alaram1.text('');
+  color.removeClass("panel-red");
+  color.addClass("panel-green");
+  emoticon.removeClass("fa fa-meh-o");
+  emoticon.addClass("fa fa-smile-o");
+  text1.text("양호");
+
+  }
+
+  if(alert_cnt==1){
+    audio.play();
+  }
+  if(alert_cnt==0){
+    audio.pause();
+  }
+  if (config.data.datasets.length > 0) {
+
+            var now = new Date();
+            var hour = now.getHours();
+            var min = now.getMinutes();
+            var second = now.getSeconds();
+            config.data.labels.push(hour+":"+min+":"+second);
+
+            if(config.data.labels.length==21){
+              $.each(config.data.datasets, function(i, dataset) {
+                  config.data.labels.shift(0,21);
+                  dataset.data.shift(0,20);
+                  dataset.data.push(recieveArray[0]);
+              });
+            }
+            else{
+            $.each(config.data.datasets, function(i, dataset,newDataset) {
+                dataset.data.push(recieveArray[0]);
+                //newDataset.data.push(recieveArray[1]);
+            });
+          }
+            window.myLine.update();
+        }
+
+
+
+});
+
     var config = {
         type: 'line',
         data: {
@@ -152,111 +269,26 @@
         dataset.pointBackgroundColor = background;
         dataset.pointBorderWidth = 1;
     });
-    window.onload = function() {
-        var ctx = document.getElementById("canvas").getContext("2d");
-        window.myLine = new Chart(ctx, config);
+    var hasChart = false;
+    var initChart = function(){
+      console.log("그래프 로드1");
+      var ctx = document.getElementById("canvas").getContext("2d");
+      window.myLine = new Chart(ctx, config);
+      console.log("그래프 로드2");
+      hasChart = true;
+      //  console.log(config.data.datasets[0]);
     };
+    window.onload = function() {
+    };
+
+
 </script>
 
 
-<script src="/socket.io/socket.io.js"></script>
+
 <script>
 
-var socket = io.connect("http://localhost:3000");
-var audio = new Audio();
-audio.src='/audio/alert.mp3';
-var alert_cnt=0;
 
-var color = $("#color");
-var emoticon =$("#emoticon i");
-var size = $("#size");
-var text1 = $("#text");
-var alaram1 = $("#help");
-socket.on('news',function (alaram) {
-  console.log(alaram);
-  if(alaram!=""){
-    //alert_cnt=1;
-    color.removeClass("panel-green");
-    color.addClass("panel-red");
-    emoticon.removeClass("fa fa-smile-o");
-    emoticon.addClass("fa fa-meh-o");
-    text1.text("경고");
-    alaram1.text(alaram);
-    audio.play();
-
-  }
-
- if(alaram==""){
-  // alert_cnt=0;
-  alaram1.text('');
-  color.removeClass("panel-red");
-  color.addClass("panel-green");
-  emoticon.removeClass("fa fa-meh-o");
-  emoticon.addClass("fa fa-smile-o");
-  text1.text("양호");
-  audio.pause();
-  }
-})
-
-
-
-socket.on('chat message',function (recieveArray,alaram) {
-  console.log("chat message: ",recieveArray[4],alaram);
-  console.log("알람"+alaram);
-
-
-
-  if(alaram!=""){
-    alert_cnt=1;
-    color.removeClass("panel-green");
-    color.addClass("panel-red");
-    emoticon.removeClass("fa fa-smile-o");
-    emoticon.addClass("fa fa-meh-o");
-    text1.text("경고");
-    alaram1.text(alaram);
-
-  }
-
- if(alaram==""){
-   alert_cnt=0;
-  alaram1.text('');
-  color.removeClass("panel-red");
-  color.addClass("panel-green");
-  emoticon.removeClass("fa fa-meh-o");
-  emoticon.addClass("fa fa-smile-o");
-  text1.text("양호");
-
-  }
-
-  if(alert_cnt==1){
-    audio.play();
-  }
-  if(alert_cnt==0){
-    audio.pause();
-  }
-  if (config.data.datasets.length > 0) {
-
-            var now = new Date();
-            var hour = now.getHours();
-            var min = now.getMinutes();
-            var second = now.getSeconds();
-            config.data.labels.push(hour+":"+min+":"+second);
-
-            if(config.data.labels.length==21){
-              $.each(config.data.datasets, function(i, dataset) {
-                  config.data.labels.shift(0,21);
-                  dataset.data.shift(0,20);
-                  dataset.data.push(recieveArray[4]);
-              });
-            }
-            else{
-            $.each(config.data.datasets, function(i, dataset) {
-                dataset.data.push(recieveArray[4]);
-            });
-          }
-            window.myLine.update();
-        }
-});
 
 
 

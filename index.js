@@ -6,6 +6,9 @@ var bodyParser = require('body-parser');
 var mongoose  = require('mongoose');
 var querystring = require('querystring');
 
+require('events').EventEmitter.prototype._maxListeners = 0;
+
+
 //http server
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -20,71 +23,50 @@ var rule_001,rule_002,rule_003,rule_004,rule_005;
 var parse;  //???
 var alaram=""; // 알람을 담을 그릇
 
-
 var intervalmessage; // 클라이언트 주기버튼 메시지를 담을 변수
 
 
+/*
+  reccount+=1;
+  console.log("카운틐ㄴ튼 "+reccount);
+*/
 
+
+var dbprevData = new Array(20); //역순으로 데이터를 찾기에 순서를 바꿔줄 그릇
 
 
 // TCP
 var net = require('net');
 var server = net.createServer(function (socket2) {
 
+var reccount;
 
-  //웹에서 주기버튼 눌렀을시
-  io.on('connection',function (socket) {
+
+
+    //웹에서 주기버튼 눌렀을시
+  io.on('connection',function (socket,socket3) {
+    
     socket.on('intervalEV',function (message) {
       intervalmessage=message;
+      console.log("버튼눌러 받은 멧히지: "+message);
       socket2.write(message);
     });
+
+  });
+
+  //client와 접속이 끊겻을때
+  socket2.on('close',function () {
+    //io.close()
+    console.log('client disconnected');
+
+    //socket2.end("good bye");
+  });  
+  socket2.on('error',function (err) {
+   
+    console.log(err);
   });
 
   console.log(socket2.address().address+"connected");
-
-
-  rule001.find({}).sort('-createdAt').exec(function (err, r001) {
-
-      rule_001=r001[0];
-      if(rule_001==undefined){
-      rule_001={rule001:"100",range001:"매우민감"};
-      }
-      rule002.find({}).sort('-createdAt').exec(function (err, r002) {
-
-          rule_002=r002[0];
-          if(rule_002==undefined){
-          rule_002={rule002:"100",range002:"매우민감"};
-          }
-          rule003.find({}).sort('-createdAt').exec(function (err, r003) {
-
-              rule_003=r003[0];
-              if(rule_003==undefined){
-              rule_003={rule003:"100",range003:"매우민감"};
-              }
-              rule004.find({}).sort('-createdAt').exec(function (err, r004) {
-
-                  rule_004=r004[0];
-                  if(rule_004==undefined){
-                  rule_004={rule004:"100",range004:"매우민감"};
-                  }
-                  rule005.find({}).sort('-createdAt').exec(function (err, r005) {
-
-                      rule_005=r005[0];
-                      if(rule_005==undefined){
-                      rule_005={rule005:"100",range005:"매우민감"};
-                      }  
-                });
-            });
-        });
-    });
-});
-
-
-
-
-
-
-
 
   //client로 부터 오는 data 출력
   socket2.on('data',function (data) {
@@ -107,7 +89,6 @@ var server = net.createServer(function (socket2) {
   var d004 =(recieveArray[3]/600);
   var d005 =(recieveArray[4]/600);
 
- 
 
   //수신데이터 소수점 고정
   recieveArray[0]=d001.toFixed(2);
@@ -115,11 +96,6 @@ var server = net.createServer(function (socket2) {
   recieveArray[2]=d003.toFixed(2);
   recieveArray[3]=d004.toFixed(2);
   recieveArray[4]=d005.toFixed(2);
-  
- 
-
-
-
 
 
 // 수신 데이터 최대치 조정
@@ -138,7 +114,6 @@ if(recieveArray[3]>100){
 if(recieveArray[4]>100){
   recieveArray[4]=100;
 }
-
 
 
   data_001=recieveArray[0];
@@ -163,13 +138,14 @@ if(recieveArray[4]>100){
 
 /** 데이터 확인 로그 **/
 
+/*
 console.log(recieveArray);
 console.log("1번 데이터: "+recieveArray[0]);
 console.log("2번 데이터: "+recieveArray[1]);
 console.log("3번 데이터: "+recieveArray[2]);
 console.log("4번 데이터: "+recieveArray[3]);
 console.log("5번 데이터: "+recieveArray[4]);
-
+*/
 
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 기준 관련 START @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -265,7 +241,6 @@ if(rule_005.range005=="둔감"){
 if(rule_005.range005=="매우둔감"){
   parse5=standard5;
 }
-
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 기준 관련 END @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -433,18 +408,56 @@ if(noti005==1){
 
 
 
-
   // 서버 -> 클라이언트 이벤트 (수신데이터,알람데이터)
 io.emit('chat message',recieveArray,alaram);
   });
+
+
+
+  rule001.find({}).sort('-createdAt').exec(function (err, r001) {
+
+      rule_001=r001[0];
+      if(rule_001==undefined){
+      rule_001={rule001:"100",range001:"매우민감"};
+      }
+      rule002.find({}).sort('-createdAt').exec(function (err, r002) {
+
+          rule_002=r002[0];
+          if(rule_002==undefined){
+          rule_002={rule002:"100",range002:"매우민감"};
+          }
+          rule003.find({}).sort('-createdAt').exec(function (err, r003) {
+
+              rule_003=r003[0];
+              if(rule_003==undefined){
+              rule_003={rule003:"100",range003:"매우민감"};
+              }
+              rule004.find({}).sort('-createdAt').exec(function (err, r004) {
+
+                  rule_004=r004[0];
+                  if(rule_004==undefined){
+                  rule_004={rule004:"100",range004:"매우민감"};
+                  }
+                  rule005.find({}).sort('-createdAt').exec(function (err, r005) {
+
+                      rule_005=r005[0];
+                      if(rule_005==undefined){
+                      rule_005={rule005:"100",range005:"매우민감"};
+                      }
+                });
+            });
+        });
+    });
+});
+
+
+
+
+
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 알람 관련 END @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-
-  //client와 접속이 끊겻을때
-socket2.on('close',function () {
-    console.log('client disconnected');
-  });
 });
+
 
 // 에러처리
 server.on('error',function (err) {
@@ -460,7 +473,7 @@ server.listen(11111,function () {
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ DB 관련 start @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 //##################### DB 연결 ########################
-mongoose.connect("mongodb://test:test@ds011495.mlab.com:11495/dbtest");
+mongoose.connect("mongodb://test:test@ds023664.mlab.com:23664/roadtest");
 var db = mongoose.connection;
 db.once("open",function () {
   console.log("DB connected");
@@ -534,10 +547,6 @@ app.use(express.static(path.join(__dirname, 'public')));// 정적폴더 세팅
 
 
 
-
-
-
-
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@ mapping 관련 START @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 //##################### 접속 첫 페이지 ########################
@@ -558,7 +567,7 @@ app.get('/input',function (req,res) {
 
                   rule005.find({}).sort('-createdAt').exec(function (err, r005) {
 
-                    
+
                               rule_001=r001[0];
                               rule_002=r002[0];
                               rule_003=r003[0];
@@ -580,10 +589,10 @@ app.get('/input',function (req,res) {
                               if(rule_005==undefined){
                                 rule_005={rule005:"100",range005:"매우민감"};
                               }
-                              
+
 
                               res.render("input",{data_1:rule_001,data_2:rule_002,data_3:rule_003,data_4:rule_004,data_5:rule_005});
-                    
+
           });
         });
       });
@@ -729,25 +738,27 @@ app.post('/input5',function (req,res) {
 //######################### 알람 EVENT ##########################
 io.on('connection',function (socket) {
 
-  socket.emit('news',alaram);
+  socket.emit('news',alaram,dbprevData);
+  //console.log("이것 봐라: "+dbprevData[0]);
+  //console.log("2");
+  //console.log("성공");
 });
-
 
 
 //################# 그래프 page mapping START ###################
 
 // (total)
 app.get('/realtimechart-0',function (req,res) {
- 
+
 //################# 그래프 이전 데이터  #########################
-var dbprevData = new Array(20); //역순으로 데이터를 찾기에 순서를 바꿔줄 그릇
+
 //var nowtime = new Array(20);
 
 // DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
 beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
     //console.log(rcdata[16].rectime);
-    
-    //역순이라 다시 순서를 바꿔주고 있다. 
+
+    //역순이라 다시 순서를 바꿔주고 있다.
     dbprevData[0]=rcdata[19];
     dbprevData[1]=rcdata[18];
     dbprevData[2]=rcdata[17];
@@ -769,27 +780,15 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
     dbprevData[18]=rcdata[1];
     dbprevData[19]=rcdata[0];
 
-    console.log("1단 success");
     //console.log(rcdata[1].beacon001);
     //console.log(dbprevData[1].beacon001);
 
-
-  io.sockets.emit('news',alaram,dbprevData);
-  console.log("성공");
-
-
   alaram1.findOne({id:1}).sort('-createdAt').exec(function (err,a) {
 
-      rule001.find({}).sort('-createdAt').exec(function (err, r001) {
-          rule_001=r001[0];
-          if(rule_001==undefined){
-            rule_001={rule001:"100",range001:"매우민감"};
-          }
-          beacon001.find({}).sort('-createdAt').exec(function (err, bc001) {
-                if (err) return res.json({success: false, message: err});
-                  res.render("realtimechart-0", {data:bc001,data2:rule_001,data3:a});
-          });
-        });
+     
+
+                  res.render("realtimechart-0", {data3:a});
+        
       });
     });
 });
@@ -797,7 +796,35 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
 
 // (1)
 app.get('/realtimechart-1',function (req,res) {
+  //################# 그래프 이전 데이터  #########################
 
+//var nowtime = new Array(20);
+
+// DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
+beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
+    //console.log(rcdata[16].rectime);
+
+    //역순이라 다시 순서를 바꿔주고 있다.
+    dbprevData[0]=rcdata[19];
+    dbprevData[1]=rcdata[18];
+    dbprevData[2]=rcdata[17];
+    dbprevData[3]=rcdata[16];
+    dbprevData[4]=rcdata[15];
+    dbprevData[5]=rcdata[14];
+    dbprevData[6]=rcdata[13];
+    dbprevData[7]=rcdata[12];
+    dbprevData[8]=rcdata[11];
+    dbprevData[9]=rcdata[10];
+    dbprevData[10]=rcdata[9];
+    dbprevData[11]=rcdata[8];
+    dbprevData[12]=rcdata[7];
+    dbprevData[13]=rcdata[6];
+    dbprevData[14]=rcdata[5];
+    dbprevData[15]=rcdata[4];
+    dbprevData[16]=rcdata[3];
+    dbprevData[17]=rcdata[2];
+    dbprevData[18]=rcdata[1];
+    dbprevData[19]=rcdata[0];
   //console.log(r11);
   alaram1.findOne({id:1}).sort('-createdAt').exec(function (err,a) {
 
@@ -812,12 +839,42 @@ app.get('/realtimechart-1',function (req,res) {
               });
         });
     });
+    });
 });
 
 
 // (2)
 app.get('/realtimechart-2',function (req,res) {
   //console.log(r21);
+  //################# 그래프 이전 데이터  #########################
+
+//var nowtime = new Array(20);
+
+// DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
+beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
+    //console.log(rcdata[16].rectime);
+
+    //역순이라 다시 순서를 바꿔주고 있다.
+    dbprevData[0]=rcdata[19];
+    dbprevData[1]=rcdata[18];
+    dbprevData[2]=rcdata[17];
+    dbprevData[3]=rcdata[16];
+    dbprevData[4]=rcdata[15];
+    dbprevData[5]=rcdata[14];
+    dbprevData[6]=rcdata[13];
+    dbprevData[7]=rcdata[12];
+    dbprevData[8]=rcdata[11];
+    dbprevData[9]=rcdata[10];
+    dbprevData[10]=rcdata[9];
+    dbprevData[11]=rcdata[8];
+    dbprevData[12]=rcdata[7];
+    dbprevData[13]=rcdata[6];
+    dbprevData[14]=rcdata[5];
+    dbprevData[15]=rcdata[4];
+    dbprevData[16]=rcdata[3];
+    dbprevData[17]=rcdata[2];
+    dbprevData[18]=rcdata[1];
+    dbprevData[19]=rcdata[0];
 
   rule002.find({}).sort('-createdAt').exec(function (err, r002) {
       rule_002=r002[0];
@@ -830,11 +887,40 @@ app.get('/realtimechart-2',function (req,res) {
           });
       });
 });
+});
 
 // (3)
 app.get('/realtimechart-3',function (req,res) {
   //console.log(r31);
+  //################# 그래프 이전 데이터  #########################
 
+//var nowtime = new Array(20);
+
+// DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
+beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
+    //console.log(rcdata[16].rectime);
+
+    //역순이라 다시 순서를 바꿔주고 있다.
+    dbprevData[0]=rcdata[19];
+    dbprevData[1]=rcdata[18];
+    dbprevData[2]=rcdata[17];
+    dbprevData[3]=rcdata[16];
+    dbprevData[4]=rcdata[15];
+    dbprevData[5]=rcdata[14];
+    dbprevData[6]=rcdata[13];
+    dbprevData[7]=rcdata[12];
+    dbprevData[8]=rcdata[11];
+    dbprevData[9]=rcdata[10];
+    dbprevData[10]=rcdata[9];
+    dbprevData[11]=rcdata[8];
+    dbprevData[12]=rcdata[7];
+    dbprevData[13]=rcdata[6];
+    dbprevData[14]=rcdata[5];
+    dbprevData[15]=rcdata[4];
+    dbprevData[16]=rcdata[3];
+    dbprevData[17]=rcdata[2];
+    dbprevData[18]=rcdata[1];
+    dbprevData[19]=rcdata[0];
   rule003.find({}).sort('-createdAt').exec(function (err, r003) {
       rule_003=r003[0];
       if(rule_003==undefined){
@@ -846,11 +932,40 @@ app.get('/realtimechart-3',function (req,res) {
           });
       });
 });
+});
 
 // (4)
 app.get('/realtimechart-4',function (req,res) {
   //console.log(r41);
+  //################# 그래프 이전 데이터  #########################
 
+//var nowtime = new Array(20);
+
+// DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
+beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
+    //console.log(rcdata[16].rectime);
+
+    //역순이라 다시 순서를 바꿔주고 있다.
+    dbprevData[0]=rcdata[19];
+    dbprevData[1]=rcdata[18];
+    dbprevData[2]=rcdata[17];
+    dbprevData[3]=rcdata[16];
+    dbprevData[4]=rcdata[15];
+    dbprevData[5]=rcdata[14];
+    dbprevData[6]=rcdata[13];
+    dbprevData[7]=rcdata[12];
+    dbprevData[8]=rcdata[11];
+    dbprevData[9]=rcdata[10];
+    dbprevData[10]=rcdata[9];
+    dbprevData[11]=rcdata[8];
+    dbprevData[12]=rcdata[7];
+    dbprevData[13]=rcdata[6];
+    dbprevData[14]=rcdata[5];
+    dbprevData[15]=rcdata[4];
+    dbprevData[16]=rcdata[3];
+    dbprevData[17]=rcdata[2];
+    dbprevData[18]=rcdata[1];
+    dbprevData[19]=rcdata[0];
   rule004.find({}).sort('-createdAt').exec(function (err, r004) {
       rule_004=r004[0];
       if(rule_004==undefined){
@@ -862,10 +977,41 @@ app.get('/realtimechart-4',function (req,res) {
           });
       });
 });
+});
 
 // (5)
 app.get('/realtimechart-5',function (req,res) {
   //console.log(r51);
+    //################# 그래프 이전 데이터  #########################
+
+//var nowtime = new Array(20);
+
+// DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
+beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
+    //console.log(rcdata[16].rectime);
+
+    //역순이라 다시 순서를 바꿔주고 있다.
+    dbprevData[0]=rcdata[19];
+    dbprevData[1]=rcdata[18];
+    dbprevData[2]=rcdata[17];
+    dbprevData[3]=rcdata[16];
+    dbprevData[4]=rcdata[15];
+    dbprevData[5]=rcdata[14];
+    dbprevData[6]=rcdata[13];
+    dbprevData[7]=rcdata[12];
+    dbprevData[8]=rcdata[11];
+    dbprevData[9]=rcdata[10];
+    dbprevData[10]=rcdata[9];
+    dbprevData[11]=rcdata[8];
+    dbprevData[12]=rcdata[7];
+    dbprevData[13]=rcdata[6];
+    dbprevData[14]=rcdata[5];
+    dbprevData[15]=rcdata[4];
+    dbprevData[16]=rcdata[3];
+    dbprevData[17]=rcdata[2];
+    dbprevData[18]=rcdata[1];
+    dbprevData[19]=rcdata[0];
+
   rule005.find({}).sort('-createdAt').exec(function (err, r005) {
       rule_005=r005[0];
       if(rule_005==undefined){
@@ -876,6 +1022,7 @@ app.get('/realtimechart-5',function (req,res) {
               res.render("realtimechart-5", {data:bc005,data2:rule_005});
           });
       });
+});
 });
 
 
