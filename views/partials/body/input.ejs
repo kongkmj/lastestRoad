@@ -16,6 +16,10 @@
 <div >
 <h5><b>(1)번 감지기</b></h5>
 
+<script src="/socket.io/socket.io.js"></script>
+
+
+
 
 <form id="standardform1" name="standardform1" method="POST" action="/input1">
 <h5>센서 세팅:
@@ -37,42 +41,20 @@
 
   <div>
     <h5>
-    <form id="ruleform1" name="ruleform1" method="POST" action="/input1">
-    민감도 :
-    <input type ="radio" style="width:25px;height:25px;" id="range1-1" name="range1" value="매우민감"  onclick="rulesubmit1()"/>매우민감
-    <input type ="radio" style="width:25px;height:25px;" id="range1-2" name="range1" value="민감"  onclick="rulesubmit1()"/>민감
-    <input type ="radio" style="width:25px;height:25px;" id="range1-3" name="range1" value="보통"   onclick="rulesubmit1()"/>보통
-    <input type ="radio" style="width:25px;height:25px;" id="range1-4" name="range1" value="둔감"  onclick="rulesubmit1()"/>둔감
-    <input type ="radio" style="width:25px;height:25px;" id="range1-5" name="range1" value="매우둔감"  onclick="rulesubmit1()"/>매우둔감
-  </div>
-  </h5>
+      <form id="ruleform1" name="ruleform2" method="POST" action="/input1">
+      기준치 :
+      <input type ="text"  id="range1" name="range1" value=""placeholder="<%=data_1.range001%>
+      "/>
+      <button id="std1">적용 </button>
+    </div>
+    </h5>
   <script>
-    var dao = "<%=data_1.range001%>"
-    var check1_1 = document.getElementById("range1-1");
-    var check1_2 = document.getElementById("range1-2");
-    var check1_3 = document.getElementById("range1-3");
-    var check1_4 = document.getElementById("range1-4");
-    var check1_5 = document.getElementById("range1-5");
-    if(dao=="매우민감"){
-      check1_1.checked=true;
-    }
-    if(dao=="민감"){
-      check1_2.checked=true;
-    }
-    if(dao=="보통"){
-      check1_3.checked=true;
-    }
-    if(dao=="둔감"){
-      check1_4.checked=true;
-    }
-    if(dao=="매우둔감"){
-      check1_5.checked=true;
-    }
-
-
-    function rulesubmit1() {
+  var socket = io.connect("http://localhost:3000");
+    //var dao = "<%=data_1.range001%>"
+    $('#std1').click(function () {
+      socket.emit('standardData');
       ruleform1.submit();
-    }
+    })
   </script>
   </form>
 
@@ -103,42 +85,23 @@
 
     <div>
       <h5>
-      <form id="ruleform2" name="ruleform2" method="POST" action="/input2">
-      민감도 :
-      <input type ="radio" style="width:25px;height:25px;" id="range2-1" name="range2" value="매우민감" onclick="rulesubmit2()"/>매우민감
-      <input type ="radio" style="width:25px;height:25px;" id="range2-2" name="range2" value="민감" onclick="rulesubmit2()"/>민감
-      <input type ="radio" style="width:25px;height:25px;" id="range2-3" name="range2" value="보통" onclick="rulesubmit2()"/>보통
-      <input type ="radio" style="width:25px;height:25px;" id="range2-4" name="range2" value="둔감" onclick="rulesubmit2()"/>둔감
-      <input type ="radio" style="width:25px;height:25px;" id="range2-5" name="range2" value="매우둔감" onclick="rulesubmit2()"/>매우둔감
-    </div>
-    </h5>
-    <script>
-    var dao2 = "<%=data_2.range002%>"
-    var check2_1 = document.getElementById("range2-1");
-    var check2_2 = document.getElementById("range2-2");
-    var check2_3 = document.getElementById("range2-3");
-    var check2_4 = document.getElementById("range2-4");
-    var check2_5 = document.getElementById("range2-5");
-    if(dao2=="매우민감"){
-      check2_1.checked=true;
-    }
-    if(dao2=="민감"){
-      check2_2.checked=true;
-    }
-    if(dao2=="보통"){
-      check2_3.checked=true;
-    }
-    if(dao2=="둔감"){
-      check2_4.checked=true;
-    }
-    if(dao2=="매우둔감"){
-      check2_5.checked=true;
-    }
-      function rulesubmit2() {
-        ruleform2.submit();
-      }
-    </script>
-    </form>
+        <form id="ruleform2" name="ruleform2" method="POST" action="/input2">
+        기준치 :
+        <input type ="text"  id="range2" name="range2" value=""placeholder="<%=data_2.range002%>
+        "/>
+        <button id="std2">적용 </button>
+      </div>
+      </h5>
+      <script>
+      var socket = io.connect("http://localhost:3000");
+        //var dao = "<%=data_1.range001%>"
+        $('#std2').click(function () {
+          socket.emit('standardData');
+          ruleform2.submit();
+        })
+      </script>
+      </script>
+      </form>
 
 
       </div>
@@ -168,43 +131,22 @@
 
         <div>
           <h5>
-          <form id="ruleform3" name="ruleform3" method="POST" action="/input3">
-          민감도 :
-          <input type ="radio" style="width:25px;height:25px;" id="range3-1" name="range3" value="매우민감" onclick="rulesubmit3()"/>매우민감
-          <input type ="radio" style="width:25px;height:25px;" id="range3-2" name="range3" value="민감" onclick="rulesubmit3()"/>민감
-          <input type ="radio" style="width:25px;height:25px;" id="range3-3" name="range3" value="보통" onclick="rulesubmit3()"/>보통
-          <input type ="radio" style="width:25px;height:25px;" id="range3-4" name="range3" value="둔감" onclick="rulesubmit3()"/>둔감
-          <input type ="radio" style="width:25px;height:25px;" id="range3-5" name="range3" value="매우둔감" onclick="rulesubmit3()"/>매우둔감
-        </div>
-        </h5>
-        <script>
-        var dao3 = "<%=data_3.range003%>"
-
-        var check3_1 = document.getElementById("range3-1");
-        var check3_2 = document.getElementById("range3-2");
-        var check3_3 = document.getElementById("range3-3");
-        var check3_4 = document.getElementById("range3-4");
-        var check3_5 = document.getElementById("range3-5");
-        if(dao3=="매우민감"){
-          check3_1.checked=true;
-        }
-        if(dao3=="민감"){
-          check3_2.checked=true;
-        }
-        if(dao3=="보통"){
-          check3_3.checked=true;
-        }
-        if(dao3=="둔감"){
-          check3_4.checked=true;
-        }
-        if(dao3=="매우둔감"){
-          check3_5.checked=true;
-        }
-          function rulesubmit3() {
-            ruleform3.submit();
-          }
-        </script>
-        </form>
+            <form id="ruleform3" name="ruleform3" method="POST" action="/input3">
+            기준치 :
+            <input type ="text"  id="range3" name="range3" value="" placeholder="<%=data_3.range003%>
+            "/>
+            <button id="std3">적용 </button>
+          </div>
+          </h5>
+          <script>
+          var socket = io.connect("http://localhost:3000");
+            //var dao = "<%=data_1.range001%>"
+            $('#std3').click(function () {
+              socket.emit('standardData');
+              ruleform3.submit();
+            })
+          </script>
+          </form>
 
 
         </div>
@@ -236,43 +178,22 @@
 
         <div>
           <h5>
-          <form id="ruleform4" name="ruleform4" method="POST" action="/input4">
-          민감도 :
-          <input type ="radio" style="width:25px;height:25px;" id="range4-1" name="range4" value="매우민감" onclick="rulesubmit4()"/>매우민감
-          <input type ="radio" style="width:25px;height:25px;" id="range4-2" name="range4" value="민감" onclick="rulesubmit4()"/>민감
-          <input type ="radio" style="width:25px;height:25px;" id="range4-3" name="range4" value="보통" onclick="rulesubmit4()"/>보통
-          <input type ="radio" style="width:25px;height:25px;" id="range4-4" name="range4" value="둔감" onclick="rulesubmit4()"/>둔감
-          <input type ="radio" style="width:25px;height:25px;" id="range4-5" name="range4" value="매우둔감" onclick="rulesubmit4()"/>매우둔감
-        </div>
-        </h5>
-        <script>
-        var dao4 = "<%=data_4.range004%>"
-
-        var check4_1 = document.getElementById("range4-1");
-        var check4_2 = document.getElementById("range4-2");
-        var check4_3 = document.getElementById("range4-3");
-        var check4_4 = document.getElementById("range4-4");
-        var check4_5 = document.getElementById("range4-5");
-        if(dao4=="매우민감"){
-          check4_1.checked=true;
-        }
-        if(dao4=="민감"){
-          check4_2.checked=true;
-        }
-        if(dao4=="보통"){
-          check4_3.checked=true;
-        }
-        if(dao4=="둔감"){
-          check4_4.checked=true;
-        }
-        if(dao4=="매우둔감"){
-          check4_5.checked=true;
-        }
-          function rulesubmit4() {
-            ruleform4.submit();
-          }
-        </script>
-        </form>
+            <form id="ruleform4" name="ruleform4" method="POST" action="/input4">
+            기준치 :
+            <input type ="text"  id="range4" name="range4" value=""placeholder="<%=data_4.range004%>
+            "/>
+            <button id="std4">적용 </button>
+          </div>
+          </h5>
+          <script>
+          var socket = io.connect("http://localhost:3000");
+            //var dao = "<%=data_1.range001%>"
+            $('#std4').click(function () {
+              socket.emit('standardData');
+              ruleform4.submit();
+            })
+          </script>
+          </form>
 
 
           </div>
@@ -302,43 +223,22 @@
 
           <div>
             <h5>
-            <form id="ruleform5" name="ruleform5" method="POST" action="/input5">
-            민감도 :
-            <input type ="radio" style="width:25px;height:25px;" id="range5-1" name="range5" value="매우민감" onclick="rulesubmit5()"/>매우민감
-            <input type ="radio" style="width:25px;height:25px;" id="range5-2" name="range5" value="민감" onclick="rulesubmit5()"/>민감
-            <input type ="radio" style="width:25px;height:25px;" id="range5-3" name="range5" value="보통" onclick="rulesubmit5()"/>보통
-            <input type ="radio" style="width:25px;height:25px;" id="range5-4" name="range5" value="둔감" onclick="rulesubmit5()"/>둔감
-            <input type ="radio" style="width:25px;height:25px;" id="range5-5" name="range5" value="매우둔감" onclick="rulesubmit5()"/>매우둔감
-          </div>
-          </h5>
-          <script>
-          var dao5 = "<%=data_5.range005%>"
-
-          var check5_1 = document.getElementById("range5-1");
-          var check5_2 = document.getElementById("range5-2");
-          var check5_3 = document.getElementById("range5-3");
-          var check5_4 = document.getElementById("range5-4");
-          var check5_5 = document.getElementById("range5-5");
-          if(dao5=="매우민감"){
-            check5_1.checked=true;
-          }
-          if(dao5=="민감"){
-            check5_2.checked=true;
-          }
-          if(dao5=="보통"){
-            check5_3.checked=true;
-          }
-          if(dao5=="둔감"){
-            check5_4.checked=true;
-          }
-          if(dao5=="매우둔감"){
-            check5_5.checked=true;
-          }
-            function rulesubmit5() {
-              ruleform5.submit();
-            }
-          </script>
-          </form>
+              <form id="ruleform5" name="ruleform5" method="POST" action="/input5">
+              기준치 :
+              <input type ="text"  id="range5" name="range5" value="" placeholder="<%=data_5.range005%>
+              "/>
+              <button id="std5">적용 </button>
+            </div>
+            </h5>
+            <script>
+            var socket = io.connect("http://localhost:3000");
+              //var dao = "<%=data_1.range001%>"
+              $('#std5').click(function () {
+                socket.emit('standardData');
+                ruleform5.submit();
+              })
+            </script>
+            </form>
 
 
             </div>
@@ -346,7 +246,7 @@
 
 
 
-          
+
 
 
 <!-- /#page-wrapper -->

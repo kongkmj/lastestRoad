@@ -6,7 +6,7 @@
                   <h2 class="page-header" >
                     센서 세팅:
                         <%=data2.rule005%>
-                      민감도:
+                      기준치:
                         <%=data2.range005%>
 
                   </h2>
@@ -246,7 +246,7 @@ socket.on('chat message',function (recieveArray,alaram) {
                 }],
                 yAxes: [{
                     ticks:{
-                      suggestedMax: 100,
+                      suggestedMax: 180,
                       beginAtZero: true
                     },
                     display: true,

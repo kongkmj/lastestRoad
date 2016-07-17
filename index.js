@@ -24,6 +24,16 @@ var parse;  //???
 var alaram=""; // 알람을 담을 그릇
 
 var intervalmessage; // 클라이언트 주기버튼 메시지를 담을 변수
+var standardData;
+
+var rangedata1;
+var rangedata2;
+var rangedata3;
+var rangedata4;
+var rangedata5;
+
+var rcrule = new Array(5); // 디바이스로부터 받은 기준치
+var rcinterval ; // 디바이스로 부터 받은 주기
 
 
 /*
@@ -41,18 +51,24 @@ var server = net.createServer(function (socket2) {
 
 var reccount;
 
-
+  
 
     //웹에서 주기버튼 눌렀을시
-  io.on('connection',function (socket,socket3) {
-    
+  io.on('connection',function (socket) {
     socket.on('intervalEV',function (message) {
       intervalmessage=message;
-      console.log("버튼눌러 받은 멧히지: "+message);
-      socket2.write(message);
+      console.log("버튼눌러 받은 멧히지: "+intervalmessage);
+      socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+message+"b");
     });
+    socket.on('standardData',function (std) {
+      console.log("버튼눌러 받은 멧히지: "+intervalmessage);
+      console.log("이ㅏ거봐봐:"+rangedata1);
+      socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+    })
 
   });
+
+
 
   //client와 접속이 끊겻을때
   socket2.on('close',function () {
@@ -60,9 +76,9 @@ var reccount;
     console.log('client disconnected');
 
     //socket2.end("good bye");
-  });  
+  });
   socket2.on('error',function (err) {
-   
+
     console.log(err);
   });
 
@@ -76,58 +92,82 @@ var reccount;
   var recieveData   = ""+data;
   var recieveArray  = recieveData.split(','); //데이터를 ','로 split
 
+  console.log(recieveArray);
   //time
   var now = new Date();
   var hour = now.getHours();
   var min = now.getMinutes();
   var second = now.getSeconds();
 
-  //수신데이터가 크기에 값을 줄여주기위해 600으로나눔
-  var d001 =(recieveArray[0]/600);
-  var d002 =(recieveArray[1]/600);
-  var d003 =(recieveArray[2]/600);
-  var d004 =(recieveArray[3]/600);
-  var d005 =(recieveArray[4]/600);
 
+  //beacon1
+  var d001 =(recieveArray[0]); // 부호
+  var d002 =(recieveArray[1]); // roll
+  var d003 =(recieveArray[2]); // 부호
+  var d004 =(recieveArray[3]); // pitch
+  var d005 =(recieveArray[4]); // 민감도
 
-  //수신데이터 소수점 고정
-  recieveArray[0]=d001.toFixed(2);
-  recieveArray[1]=d002.toFixed(2);
-  recieveArray[2]=d003.toFixed(2);
-  recieveArray[3]=d004.toFixed(2);
-  recieveArray[4]=d005.toFixed(2);
+  //beacon2
+  var d006 =(recieveArray[5]); // 부호
+  var d007 =(recieveArray[6]); // roll
+  var d008 =(recieveArray[7]); // 부호
+  var d009 =(recieveArray[8]); // pitch
+  var d010 =(recieveArray[9]); //민감도
 
+  //beacon3
+  var d011 =(recieveArray[10]); // 부호
+  var d012 =(recieveArray[11]); // roll
+  var d013 =(recieveArray[12]); // 부호
+  var d014 =(recieveArray[13]); // pitch
+  var d015 =(recieveArray[14]); // 민감도
+
+  //beacon4
+  var d016 =(recieveArray[15]); // 부호
+  var d017 =(recieveArray[16]); // roll
+  var d018 =(recieveArray[17]); // 부호
+  var d019 =(recieveArray[18]); // pitch
+  var d020 =(recieveArray[19]); // 민감도
+
+  var d021 =(recieveArray[20]); // 부호
+  var d022 =(recieveArray[21]); // roll
+  var d023 =(recieveArray[22]); // 부호
+  var d024 =(recieveArray[23]); // pitch
+  var d025 =(recieveArray[24]); // 민감도
+  var d026 =(recieveArray[25]); // 주기
+
+// roll+pitch 값계산 
+  var parsingdata = new Array(5);
+  parsingdata[0] =  parseInt(d002) + parseInt(d004);
+  parsingdata[1] =  parseInt(d007) + parseInt(d009);
+  parsingdata[2] =  parseInt(d012) + parseInt(d014);
+  parsingdata[3] =  parseInt(d017) + parseInt(d019);
+  parsingdata[4] =  parseInt(d022) + parseInt(d024);
+
+//기준치 계산
+
+rcrule[0] = d005;
+rcrule[1] = d010;
+rcrule[2] = d015;
+rcrule[3] = d020;
+rcrule[4] = d025;
+
+//주기
+rcinterval = d026;
 
 // 수신 데이터 최대치 조정
-if(recieveArray[0]>100){
-  recieveArray[0]=100;
-}
-if(recieveArray[1]>100){
-  recieveArray[1]=100;
-}
-if(recieveArray[2]>100){
-  recieveArray[2]=100;
-}
-if(recieveArray[3]>100){
-  recieveArray[3]=100;
-}
-if(recieveArray[4]>100){
-  recieveArray[4]=100;
-}
 
-
-  data_001=recieveArray[0];
-  data_002=recieveArray[1];
-  data_003=recieveArray[2];
-  data_004=recieveArray[3];
-  data_005=recieveArray[4];
+  data_001=parsingdata[0];
+  data_002=parsingdata[1];
+  data_003=parsingdata[2];
+  data_004=parsingdata[3];
+  data_005=parsingdata[4];
 
  var beacon_Data = new beaconData({
-  beacon001:recieveArray[0],
-  beacon002:recieveArray[1],
-  beacon003:recieveArray[2],
-  beacon004:recieveArray[3],
-  beacon005:recieveArray[4],
+  beacon001:parsingdata[0],
+  beacon002:parsingdata[1],
+  beacon003:parsingdata[2],
+  beacon004:parsingdata[3],
+  beacon005:parsingdata[4],
   rectime:(hour+":"+min+":"+second)
     });
   beacon_Data.save(function (err,beacon_Data) {
@@ -135,111 +175,65 @@ if(recieveArray[4]>100){
   });
 
 
+/*
+if(data){
 
+//디바이스에서 보낸 민감도와 다를경우
+if(rcrule[0]!=rangedata1){
+  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+}
+if(rcrule[1]!=rangedata2){
+  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+}
+if(rcrule[2]!=rangedata3){
+  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+}
+if(rcrule[3]!=rangedata4){
+  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+}
+if(rcrule[4]!=rangedata5){
+  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+}
+
+//디바이스에서 보낸 주기와 다를 경우
+if(rcinterval!=intervalmessage){
+  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+}
+
+}
+*/
 /** 데이터 확인 로그 **/
 
-/*
-console.log(recieveArray);
-console.log("1번 데이터: "+recieveArray[0]);
-console.log("2번 데이터: "+recieveArray[1]);
-console.log("3번 데이터: "+recieveArray[2]);
-console.log("4번 데이터: "+recieveArray[3]);
-console.log("5번 데이터: "+recieveArray[4]);
-*/
+
 
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 기준 관련 START @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 // 기준 설정
-var standard1=1500/600; //2.5
-var standard2=3000/600; //5
-var standard3=6000/600; //10
-var standard4=12000/600; //20
-var standard5=24000/600; //40
 
 var parse1,parse2,parse3,parse4,parse5;
 
 
 
 // (1)
-if(rule_001.range001=="매우민감"){
-  parse1=standard1;
-}
-if(rule_001.range001=="민감"){
-  parse1=standard2;
-}
-if(rule_001.range001=="보통"){
-  parse1=standard3;
-}
-if(rule_001.range001=="둔감"){
-  parse1=standard4;
-}
-if(rule_001.range001=="매우둔감"){
-  parse1=standard5;
+if(rule_001.range001!=undefined){
+  parse1=rule_001.range001;
 }
 // (2)
-if(rule_002.range002=="매우민감"){
-  parse2=standard1;
-}
-if(rule_002.range002=="민감"){
-  parse2=standard2;
-}
-if(rule_002.range002=="보통"){
-  parse2=standard3;
-}
-if(rule_002.range002=="둔감"){
-  parse2=standard4;
-}
-if(rule_002.range002=="매우둔감"){
-  parse2=standard5;
+if(rule_002.range002!=undefined){
+  parse2=rule_002.range002;
 }
 // (3)
-if(rule_003.range003=="매우민감"){
-  parse3=standard1;
-}
-if(rule_003.range003=="민감"){
-  parse3=standard2;
-}
-if(rule_003.range003=="보통"){
-  parse3=standard3;
-}
-if(rule_003.range003=="둔감"){
-  parse3=standard4;
-}
-if(rule_003.range003=="매우둔감"){
-  parse3=standard5;
+if(rule_003.range003!=undefined){
+  parse3=rule_003.range003;
 }
 // (4)
-if(rule_004.range004=="매우민감"){
-  parse4=standard1;
-}
-if(rule_004.range004=="민감"){
-  parse4=standard2;
-}
-if(rule_004.range004=="보통"){
-  parse4=standard3;
-}
-if(rule_004.range004=="둔감"){
-  parse4=standard4;
-}
-if(rule_004.range004=="매우둔감"){
-  parse4=standard5;
+if(rule_004.range004!=undefined){
+  parse4=rule_004.range004;
 }
 // (5)
-if(rule_005.range005=="매우민감"){
-  parse5=standard1;
-}
-if(rule_005.range005=="민감"){
-  parse5=standard2;
-}
-if(rule_005.range005=="보통"){
-  parse5=standard3;
-}
-if(rule_005.range005=="둔감"){
-  parse5=standard4;
-}
-if(rule_005.range005=="매우둔감"){
-  parse5=standard5;
+if(rule_005.range005!=undefined){
+  parse5=rule_005.range005;
 }
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 기준 관련 END @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -249,61 +243,63 @@ if(rule_005.range005=="매우둔감"){
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 알람 관련 start @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 // (1) 알람 연산
-var plus001 =parseInt(rule_001.rule001)+parse1;
+var plus001 =parseInt(rule_001.rule001)+parseInt(parse1);
 var minus001 =parseInt(rule_001.rule001)-parse1;
 
-if((recieveArray[0]>plus001)||(recieveArray[0]<minus001)){
+console.log(plus001);
+console.log(minus001);
+if((parsingdata[0]>plus001)||(parsingdata[0]<minus001)){
   noti001=1;
 }
-if((recieveArray[0]<=plus001)&&(recieveArray[0]>=minus001)){
+if((parsingdata[0]<=plus001)&&(parsingdata[0]>=minus001)){
   noti001=0;
 }
 
 
 // (2) 알람 연산
-var plus002 =parseInt(rule_002.rule002)+parse2;
+var plus002 =parseInt(rule_002.rule002)+parseInt(parse2);
 var minus002 =parseInt(rule_002.rule002)-parse2;
 
-if((recieveArray[1]>plus002)||(recieveArray[1]<minus002)){
+if((parsingdata[1]>plus002)||(parsingdata[1]<minus002)){
   noti002=1;
 }
-if((recieveArray[1]<=plus002)&&(recieveArray[1]>=minus002)){
+if((parsingdata[1]<=plus002)&&(parsingdata[1]>=minus002)){
   noti002=0;
 }
 
 
 // (3) 알람 연산
-var plus003 =parseInt(rule_003.rule003)+parse3;
+var plus003 =parseInt(rule_003.rule003)+parseInt(parse3);
 var minus003 =parseInt(rule_003.rule003)-parse3;
 
-if((recieveArray[2]>plus003)||(recieveArray[2]<minus003)){
+if((parsingdata[2]>plus003)||(parsingdata[2]<minus003)){
   noti003=1;
 }
-if((recieveArray[2]<=plus003)&&(recieveArray[2]>=minus003)){
+if((parsingdata[2]<=plus003)&&(parsingdata[2]>=minus003)){
   noti003=0;
 }
 
 
 // (4) 알람 연산
-var plus004 =parseInt(rule_004.rule004)+parse4;
+var plus004 =parseInt(rule_004.rule004)+parseInt(parse4);
 var minus004 =parseInt(rule_004.rule004)-parse4;
 
-if((recieveArray[3]>plus004)||(recieveArray[3]<minus004)){
+if((parsingdata[3]>plus004)||(parsingdata[3]<minus004)){
   noti004=1;
 }
-if((recieveArray[3]<=plus004)&&(recieveArray[3]>=minus004)){
+if((parsingdata[3]<=plus004)&&(parsingdata[3]>=minus004)){
   noti004=0;
 }
 
 
 // (5) 알람 연산
-var plus005 =parseInt(rule_005.rule005)+parse5;
+var plus005 =parseInt(rule_005.rule005)+parseInt(parse5);
 var minus005 =parseInt(rule_005.rule005)-parse5;
 
-if((recieveArray[4]>plus005)||(recieveArray[4]<minus005)){
+if((parsingdata[4]>plus005)||(parsingdata[4]<minus005)){
   noti005=1;
 }
-if((recieveArray[4]<=plus005)&&(recieveArray[4]>=minus005)){
+if((parsingdata[4]<=plus005)&&(parsingdata[4]>=minus005)){
   noti005=0;
 }
 
@@ -345,7 +341,7 @@ if(noti001==1){
       bnum:1,
       gnum:1,
       status:"경고",
-      beacon:recieveArray[0]
+      beacon:parsingdata[0]
     });
     console.log("1번 비콘 경고 받음");
   log1.save(function (err,log1) {
@@ -358,7 +354,7 @@ if(noti002==1){
       bnum:2,
       gnum:1,
       status:"경고",
-      beacon:recieveArray[1]
+      beacon:parsingdata[1]
     });
     console.log("2번 비콘 경고 받음");
   log2.save(function (err,log2) {
@@ -372,7 +368,7 @@ if(noti003==1){
       bnum:3,
       gnum:1,
       status:"경고",
-      beacon:recieveArray[2]
+      beacon:parsingdata[2]
     });
     console.log("3번 비콘 경고 받음");
   log3.save(function (err,log3) {
@@ -385,7 +381,7 @@ if(noti004==1){
       bnum:4,
       gnum:1,
       status:"경고",
-      beacon:recieveArray[3]
+      beacon:parsingdata[3]
     });
     console.log("4번 비콘 경고 받음");
   log4.save(function (err,log4) {
@@ -398,7 +394,7 @@ if(noti005==1){
       bnum:5,
       gnum:1,
       status:"경고",
-      beacon:recieveArray[4]
+      beacon:parsingdata[4]
     });
     console.log("5번 비콘 경고 받음");
   log5.save(function (err,log5) {
@@ -409,7 +405,7 @@ if(noti005==1){
 
 
   // 서버 -> 클라이언트 이벤트 (수신데이터,알람데이터)
-io.emit('chat message',recieveArray,alaram);
+io.emit('chat message',parsingdata,alaram);
   });
 
 
@@ -608,32 +604,34 @@ app.get('/input',function (req,res) {
 // (1)
 app.post('/input1',function (req,res) {
   var ruledata;
-  var rangedata;
+
   if(req.body.ruleid1=="on"){
-    ruledata = data_001;
+    ruledata = data_002;
   }
   else{
     ruledata=rule_001.rule001;
   }
   if(req.body.range1==undefined){
-    rangedata= rule_001.range001;
+    rangedata1= rule_001.range001;
   }
   else{
-    rangedata=req.body.range1;
+    rangedata1=req.body.range1;
   }
-  var log = new rule001({
+  var log1 = new rule001({
     rule001:ruledata,
-    range001:rangedata
+    range001:rangedata1
   });
-  log.save(function (err,log) {
+  log1.save(function (err,log2) {
   });
+  //post값
+  console.log("post 값 :"+rangedata1);
   res.redirect('/input');
 });
 
 // (2)
 app.post('/input2',function (req,res) {
   var ruledata;
-  var rangedata;
+
   if(req.body.ruleid2=="on"){
     ruledata = data_002;
   }
@@ -641,14 +639,14 @@ app.post('/input2',function (req,res) {
     ruledata=rule_002.rule002;
   }
   if(req.body.range2==undefined){
-    rangedata= rule_002.range002;
+    rangedata2= rule_002.range002;
   }
   else{
-    rangedata=req.body.range2;
+    rangedata2=req.body.range2;
   }
   var log2 = new rule002({
     rule002:ruledata,
-    range002:rangedata
+    range002:rangedata2
   });
   log2.save(function (err,log2) {
   });
@@ -658,7 +656,7 @@ app.post('/input2',function (req,res) {
 // (3)
 app.post('/input3',function (req,res) {
   var ruledata;
-  var rangedata;
+
   if(req.body.ruleid3=="on"){
     ruledata = data_003;
   }
@@ -666,14 +664,14 @@ app.post('/input3',function (req,res) {
     ruledata=rule_003.rule003;
   }
   if(req.body.range3==undefined){
-    rangedata= rule_003.range003;
+    rangedata3= rule_003.range003;
   }
   else{
-    rangedata=req.body.range3;
+    rangedata3=req.body.range3;
   }
   var log3 = new rule003({
     rule003:ruledata,
-    range003:rangedata
+    range003:rangedata3
   });
   log3.save(function (err,log3) {
   });
@@ -682,7 +680,7 @@ app.post('/input3',function (req,res) {
 // (4)
 app.post('/input4',function (req,res) {
   var ruledata;
-  var rangedata;
+
   if(req.body.ruleid4=="on"){
     ruledata = data_004;
   }
@@ -690,14 +688,14 @@ app.post('/input4',function (req,res) {
     ruledata=rule_004.rule004;
   }
   if(req.body.range4==undefined){
-    rangedata= rule_004.range004;
+    rangedata4= rule_004.range004;
   }
   else{
-    rangedata=req.body.range4;
+    rangedata4=req.body.range4;
   }
   var log4 = new rule004({
     rule004:ruledata,
-    range004:rangedata
+    range004:rangedata4
   });
   log4.save(function (err,log4) {
   });
@@ -707,7 +705,6 @@ app.post('/input4',function (req,res) {
 // (5)
 app.post('/input5',function (req,res) {
   var ruledata;
-  var rangedata;
   if(req.body.ruleid5=="on"){
     ruledata = data_005;
   }
@@ -715,14 +712,14 @@ app.post('/input5',function (req,res) {
     ruledata=rule_005.rule005;
   }
   if(req.body.range5==undefined){
-    rangedata= rule_005.range005;
+    rangedata5= rule_005.range005;
   }
   else{
-    rangedata=req.body.range5;
+    rangedata5=req.body.range5;
   }
   var log5 = new rule005({
     rule005:ruledata,
-    range005:rangedata
+    range005:rangedata5
   });
   log5.save(function (err,log5) {
   });
@@ -785,10 +782,10 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
 
   alaram1.findOne({id:1}).sort('-createdAt').exec(function (err,a) {
 
-     
+
 
                   res.render("realtimechart-0", {data3:a});
-        
+
       });
     });
 });
