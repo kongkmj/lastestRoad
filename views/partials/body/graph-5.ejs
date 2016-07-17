@@ -199,12 +199,12 @@ socket.on('chat message',function (recieveArray,alaram) {
               $.each(config.data.datasets, function(i, dataset) {
                   config.data.labels.shift(0,21);
                   dataset.data.shift(0,20);
-                  dataset.data.push(recieveArray[0]);
+                  dataset.data.push(recieveArray[4]);
               });
             }
             else{
             $.each(config.data.datasets, function(i, dataset,newDataset) {
-                dataset.data.push(recieveArray[0]);
+                dataset.data.push(recieveArray[4]);
                 //newDataset.data.push(recieveArray[1]);
             });
           }

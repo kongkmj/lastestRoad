@@ -154,7 +154,7 @@ socket.on('news',function (alaram,dbprevData) {
 
 
 socket.on('chat message',function (recieveArray,alaram) {
-  console.log("chat message: ",recieveArray[0],alaram);
+  console.log("chat message: ",recieveArray[2],alaram);
   console.log("알람"+alaram);
 
 
@@ -199,12 +199,12 @@ socket.on('chat message',function (recieveArray,alaram) {
               $.each(config.data.datasets, function(i, dataset) {
                   config.data.labels.shift(0,21);
                   dataset.data.shift(0,20);
-                  dataset.data.push(recieveArray[0]);
+                  dataset.data.push(recieveArray[2]);
               });
             }
             else{
             $.each(config.data.datasets, function(i, dataset,newDataset) {
-                dataset.data.push(recieveArray[0]);
+                dataset.data.push(recieveArray[2]);
                 //newDataset.data.push(recieveArray[1]);
             });
           }

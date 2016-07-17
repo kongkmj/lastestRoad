@@ -201,6 +201,10 @@ socket.on('chat message',function (recieveArray,alaram) {
             if(config.data.labels.length==21){
               config.data.labels.shift(0,21);
               config.data.datasets[0].data.shift(0,20);
+              config.data.datasets[1].data.shift(0,20);
+              config.data.datasets[2].data.shift(0,20);
+              config.data.datasets[3].data.shift(0,20);
+              config.data.datasets[4].data.shift(0,20);
               config.data.datasets[0].data.push(recieveArray[0]);
               config.data.datasets[1].data.push(recieveArray[1]);
               config.data.datasets[2].data.push(recieveArray[2]);
