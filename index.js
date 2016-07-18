@@ -20,7 +20,6 @@ var rule_001,rule_002,rule_003,rule_004,rule_005;
 
 
 
-var parse;  //???
 var alaram=""; // 알람을 담을 그릇
 
 var intervalmessage; // 클라이언트 주기버튼 메시지를 담을 변수
@@ -167,27 +166,11 @@ rcinterval = d011;
 
 if(data){
 
-//디바이스에서 보낸 민감도와 다를경우
-if(rcrule[0]!=rangedata[0]){
-  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
-}
-if(rcrule[1]!=rangedata[1]){
-  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
-}
-if(rcrule[2]!=rangedata[2]){
-  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
-}
-if(rcrule[3]!=rangedata[3]){
-  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
-}
-if(rcrule[4]!=rangedata[4]){
-  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
-}
+//디바이스에서 보낸 데이터(주기,민감도)가 다를 경우
 
-//디바이스에서 보낸 주기와 다를 경우
-if(rcinterval!=intervalmessage){
+if(rcrule[0]!=rangedata[0]||rcrule[1]!=rangedata[1]||rcrule[2]!=rangedata[2]||rcrule[3]!=rangedata[3]||rcrule[4]!=rangedata[4]||rcinterval!=intervalmessage){
   socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
-}
+  }
 
 }
 
