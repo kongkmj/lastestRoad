@@ -107,58 +107,44 @@ var server = net.createServer(function (socket2) {
 
 
   //beacon1
-  var d001 =(recieveArray[0]); // 부호
-  var d002 =(recieveArray[1]); // roll
-  var d003 =(recieveArray[2]); // 부호
-  var d004 =(recieveArray[3]); // pitch
-  var d005 =(recieveArray[4]); // 민감도
+  var d001 =(recieveArray[0]); // 각도
+  var d002 =(recieveArray[1]); // 민감도
 
   //beacon2
-  var d006 =(recieveArray[5]); // 부호
-  var d007 =(recieveArray[6]); // roll
-  var d008 =(recieveArray[7]); // 부호
-  var d009 =(recieveArray[8]); // pitch
-  var d010 =(recieveArray[9]); //민감도
+  var d003 =(recieveArray[2]); // 각도
+  var d004 =(recieveArray[3]); // 민감도
 
-  //beacon3
-  var d011 =(recieveArray[10]); // 부호
-  var d012 =(recieveArray[11]); // roll
-  var d013 =(recieveArray[12]); // 부호
-  var d014 =(recieveArray[13]); // pitch
-  var d015 =(recieveArray[14]); // 민감도
+  //
+  var d005 =(recieveArray[4]); // 각도
+  var d006 =(recieveArray[5]); // 민감도
 
-  //beacon4
-  var d016 =(recieveArray[15]); // 부호
-  var d017 =(recieveArray[16]); // roll
-  var d018 =(recieveArray[17]); // 부호
-  var d019 =(recieveArray[18]); // pitch
-  var d020 =(recieveArray[19]); // 민감도
+  var d007 =(recieveArray[6]); // 각도
+  var d008 =(recieveArray[7]); // 민감도
 
-  var d021 =(recieveArray[20]); // 부호
-  var d022 =(recieveArray[21]); // roll
-  var d023 =(recieveArray[22]); // 부호
-  var d024 =(recieveArray[23]); // pitch
-  var d025 =(recieveArray[24]); // 민감도
-  var d026 =(recieveArray[25]); // 주기
+  var d009 =(recieveArray[8]); // 긱도
+  var d010 =(recieveArray[9]); // 민감도
+
+  var d011 =(recieveArray[10]); // 주기
+
 
 // roll+pitch 값계산 
   var parsingdata = new Array(5);
-  parsingdata[0] =  parseInt(d002) + parseInt(d004);
-  parsingdata[1] =  parseInt(d007) + parseInt(d009);
-  parsingdata[2] =  parseInt(d012) + parseInt(d014);
-  parsingdata[3] =  parseInt(d017) + parseInt(d019);
-  parsingdata[4] =  parseInt(d022) + parseInt(d024);
+  parsingdata[0] =  parseInt(d001);
+  parsingdata[1] =  parseInt(d003);
+  parsingdata[2] =  parseInt(d005);
+  parsingdata[3] =  parseInt(d007);
+  parsingdata[4] =  parseInt(d009);
 
 //기준치 계산
 
-rcrule[0] = d005;
-rcrule[1] = d010;
-rcrule[2] = d015;
-rcrule[3] = d020;
-rcrule[4] = d025;
+rcrule[0] = d002;
+rcrule[1] = d004;
+rcrule[2] = d006;
+rcrule[3] = d008;
+rcrule[4] = d010;
 
 //주기
-rcinterval = d026;
+rcinterval = d011;
 
 // 수신 데이터 최대치 조정
 
@@ -245,7 +231,6 @@ if(rule_005.range005!=undefined){
 }
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 기준 관련 END @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 알람 관련 start @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -642,7 +627,12 @@ app.post('/input1',function (req,res) {
     console.log(log1);
   });
 
- 
+  if(rangedata[0]<10){
+    rangedata[0]="00"+rangedata[0];
+  }
+  if(rangedata[0]>=10&&rangedata[0]<100){
+    rangedata[0]="0"+rangedata[0];
+  }
 
    io.emit('email1');
     
@@ -674,6 +664,14 @@ app.post('/input2',function (req,res) {
   log2.save(function (err,log2) {
 
   });
+
+  if(rangedata[1]<10){
+    rangedata[1]="00"+rangedata[1];
+  }
+  if(rangedata[1]>=10&&rangedata[1]<100){
+    rangedata[1]="0"+rangedata[1];
+  }
+
    io.emit('email2');
   res.redirect('/input');
 });
@@ -700,6 +698,14 @@ app.post('/input3',function (req,res) {
   });
   log3.save(function (err,log3) {
   });
+
+  if(rangedata[2]<10){
+    rangedata[2]="00"+rangedata[2];
+  }
+  if(rangedata[2]>=10&&rangedata[2]<100){
+    rangedata[2]="0"+rangedata[2];
+  }
+
    io.emit('email3');
   res.redirect('/input');
 });
@@ -725,6 +731,14 @@ app.post('/input4',function (req,res) {
   });
   log4.save(function (err,log4) {
   });
+
+  if(rangedata[3]<10){
+    rangedata[3]="00"+rangedata[3];
+  }
+  if(rangedata[3]>=10&&rangedata[3]<100){
+    rangedata[3]="0"+rangedata[3];
+  }
+
    io.emit('email4');
   res.redirect('/input');
 });
@@ -750,6 +764,14 @@ app.post('/input5',function (req,res) {
   });
   log5.save(function (err,log5) {
   });
+
+  if(rangedata[4]<10){
+    rangedata[4]="00"+rangedata[4];
+  }
+  if(rangedata[4]>=10&&rangedata[4]<100){
+    rangedata[4]="0"+rangedata[4];
+  }
+
    io.emit('email5');
   res.redirect('/input');
 });
