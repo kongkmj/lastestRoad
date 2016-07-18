@@ -34,10 +34,7 @@ var rcrule = new Array(5); // 디바이스로부터 받은 기준치
 var rcinterval ; // 디바이스로 부터 받은 주기
 
 var reccount=0;
-/*
-  reccount+=1;
-  console.log("카운틐ㄴ튼 "+reccount);
-*/
+
 
 
 var dbprevData = new Array(20); //역순으로 데이터를 찾기에 순서를 바꿔줄 그릇
@@ -98,7 +95,7 @@ var server = net.createServer(function (socket2) {
   var recieveData   = ""+data;
   var recieveArray  = recieveData.split(','); //데이터를 ','로 split
 
-  console.log(recieveArray);
+ 
   //time
   var now = new Date();
   var hour = now.getHours();
@@ -163,7 +160,7 @@ rcinterval = d011;
   rectime:(hour+":"+min+":"+second)
     });
   beacon_Data.save(function (err,beacon_Data) {
-    console.log("성공");
+    
   });
 
 
@@ -239,8 +236,7 @@ if(rule_005.range005!=undefined){
 var plus001 =parseInt(rule_001.rule001)+parseInt(parse1);
 var minus001 =parseInt(rule_001.rule001)-parse1;
 
-console.log(plus001);
-console.log(minus001);
+
 if((parsingdata[0]>plus001)||(parsingdata[0]<minus001)){
   noti001=1;
 }
@@ -302,14 +298,14 @@ if((parsingdata[4]<=plus005)&&(parsingdata[4]>=minus005)){
 
 //알람 배열
 var notiarr=[noti001,noti002,noti003,noti004,noti005];
-//console.log("notiarr: "+notiarr);
+
   alaram="";
   for(var i=0;i<10;i++){
     if(notiarr[i]==1){
       alaram+=1+i+"번 ";
     }
   }
-  console.log("알람: "+alaram);
+  
 
 
 
@@ -320,9 +316,9 @@ if(alaram!=""){
         id:1,
         alaram:alaram
       });
-    //  console.log("알람저장");
+    
     alaramsave.save(function (err,alaramsave) {
-      //  console.log(alaramsave);
+     
   });
 }
 
@@ -351,7 +347,7 @@ if(noti002==1){
     });
     console.log("2번 비콘 경고 받음");
   log2.save(function (err,log2) {
-      console.log(log2);
+     
   });
 }
 
@@ -468,7 +464,7 @@ server.listen(11111,function () {
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ DB 관련 start @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 //##################### DB 연결 ########################
-mongoose.connect("mongodb://test:test@ds023664.mlab.com:23664/roadtest");
+mongoose.connect("mongodb://172.31.11.180:27017");
 var db = mongoose.connection;
 db.once("open",function () {
   console.log("DB connected");
@@ -624,7 +620,7 @@ app.post('/input1',function (req,res) {
     range001:rangedata[0]
   });
   log1.save(function (err,log1) {
-    console.log(log1);
+   
   });
 
   if(rangedata[0]<10){
@@ -637,7 +633,7 @@ app.post('/input1',function (req,res) {
    io.emit('email1');
     
   
-   console.log(rangedata[0]);
+  
   res.redirect('/input');
 });
 
@@ -786,9 +782,7 @@ app.post('/input5',function (req,res) {
 io.on('connection',function (socket) {
 
   socket.emit('news',alaram,dbprevData);
-  //console.log("이것 봐라: "+dbprevData[0]);
-  //console.log("2");
-  //console.log("성공");
+ 
 });
 
 
@@ -803,7 +797,7 @@ app.get('/realtimechart-0',function (req,res) {
 
 // DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
 beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
-    //console.log(rcdata[16].rectime);
+    
 
     //역순이라 다시 순서를 바꿔주고 있다.
     dbprevData[0]=rcdata[19];
@@ -827,8 +821,7 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
     dbprevData[18]=rcdata[1];
     dbprevData[19]=rcdata[0];
 
-    //console.log(rcdata[1].beacon001);
-    //console.log(dbprevData[1].beacon001);
+    
 
   alaram1.findOne({id:1}).sort('-createdAt').exec(function (err,a) {
       rule001.find({}).sort('-createdAt').exec(function (err, r001) {
@@ -860,7 +853,7 @@ app.get('/realtimechart-1',function (req,res) {
 
 // DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
 beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
-    //console.log(rcdata[16].rectime);
+   
 
     //역순이라 다시 순서를 바꿔주고 있다.
     dbprevData[0]=rcdata[19];
@@ -883,7 +876,7 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
     dbprevData[17]=rcdata[2];
     dbprevData[18]=rcdata[1];
     dbprevData[19]=rcdata[0];
-  //console.log(r11);
+  
   alaram1.findOne({id:1}).sort('-createdAt').exec(function (err,a) {
 
       rule001.find({}).sort('-createdAt').exec(function (err, r001) {
@@ -903,14 +896,14 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
 
 // (2)
 app.get('/realtimechart-2',function (req,res) {
-  //console.log(r21);
+  
   //################# 그래프 이전 데이터  #########################
 
 //var nowtime = new Array(20);
 
 // DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
 beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
-    //console.log(rcdata[16].rectime);
+    
 
     //역순이라 다시 순서를 바꿔주고 있다.
     dbprevData[0]=rcdata[19];
@@ -949,14 +942,14 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
 
 // (3)
 app.get('/realtimechart-3',function (req,res) {
-  //console.log(r31);
+  
   //################# 그래프 이전 데이터  #########################
 
 //var nowtime = new Array(20);
 
 // DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
 beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
-    //console.log(rcdata[16].rectime);
+   
 
     //역순이라 다시 순서를 바꿔주고 있다.
     dbprevData[0]=rcdata[19];
@@ -994,14 +987,14 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
 
 // (4)
 app.get('/realtimechart-4',function (req,res) {
-  //console.log(r41);
+  
   //################# 그래프 이전 데이터  #########################
 
 //var nowtime = new Array(20);
 
 // DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
 beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
-    //console.log(rcdata[16].rectime);
+    
 
     //역순이라 다시 순서를 바꿔주고 있다.
     dbprevData[0]=rcdata[19];
@@ -1039,14 +1032,14 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
 
 // (5)
 app.get('/realtimechart-5',function (req,res) {
-  //console.log(r51);
+ 
     //################# 그래프 이전 데이터  #########################
 
 //var nowtime = new Array(20);
 
 // DB에서 최근 20개의 데이터를 역순 끝에서부터 20개를 받아오고있다.
 beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
-    //console.log(rcdata[16].rectime);
+    
 
     //역순이라 다시 순서를 바꿔주고 있다.
     dbprevData[0]=rcdata[19];
