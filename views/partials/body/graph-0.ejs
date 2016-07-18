@@ -55,7 +55,11 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-
+var settingdata1 = parseInt("<%=data1.rule001%>");
+var settingdata2 = parseInt("<%=data2.rule002%>");
+var settingdata3 = parseInt("<%=data3.rule003%>");
+var settingdata4 = parseInt("<%=data4.rule004%>");
+var settingdata5 = parseInt("<%=data5.rule005%>");
 var socket = io.connect("http://localhost:3000");
 var audio = new Audio();
 audio.src='/audio/alert.mp3';
@@ -76,28 +80,28 @@ console.log("스크립트 로드");
 
 var message;
 $('#interval1').click(function () {
-  message="1";
+  message="001";
   socket.emit('intervalEV',message);
   console.log('누름');
 });
 
 $('#interval2').click(function () {
-  message="2";
+  message="002";
   socket.emit('intervalEV',message);
   console.log('누름');
 });
 $('#interval3').click(function () {
-  message="3";
+  message="003";
   socket.emit('intervalEV',message);
   console.log('누름');
 });
 $('#interval4').click(function () {
-  message="4";
+  message="004";
   socket.emit('intervalEV',message);
   console.log('누름');
 });
 $('#interval5').click(function () {
-  message="5";
+  message="005";
   socket.emit('intervalEV',message);
   console.log('누름');
 });
@@ -115,11 +119,11 @@ socket.on('news',function (alaram,dbprevData) {
 
   for(var i=0;i<20;i++){
     config.data.labels[i]=(dbprevData[i].rectime);
-    config.data.datasets[0].data[i]=(dbprevData[i].beacon001);
-    config.data.datasets[1].data[i]=(dbprevData[i].beacon002);
-    config.data.datasets[2].data[i]=(dbprevData[i].beacon003);
-    config.data.datasets[3].data[i]=(dbprevData[i].beacon004);
-    config.data.datasets[4].data[i]=(dbprevData[i].beacon005);
+    config.data.datasets[0].data[i]=(dbprevData[i].beacon001-settingdata1);
+    config.data.datasets[1].data[i]=(dbprevData[i].beacon002-settingdata2);
+    config.data.datasets[2].data[i]=(dbprevData[i].beacon003-settingdata3);
+    config.data.datasets[3].data[i]=(dbprevData[i].beacon004-settingdata4);
+    config.data.datasets[4].data[i]=(dbprevData[i].beacon005-settingdata5);
 
   }
 
@@ -205,19 +209,19 @@ socket.on('chat message',function (recieveArray,alaram) {
               config.data.datasets[2].data.shift(0,20);
               config.data.datasets[3].data.shift(0,20);
               config.data.datasets[4].data.shift(0,20);
-              config.data.datasets[0].data.push(recieveArray[0]);
-              config.data.datasets[1].data.push(recieveArray[1]);
-              config.data.datasets[2].data.push(recieveArray[2]);
-              config.data.datasets[3].data.push(recieveArray[3]);
-              config.data.datasets[4].data.push(recieveArray[4]);
+              config.data.datasets[0].data.push(recieveArray[0]-settingdata1);
+              config.data.datasets[1].data.push(recieveArray[1]-settingdata2);
+              config.data.datasets[2].data.push(recieveArray[2]-settingdata3);
+              config.data.datasets[3].data.push(recieveArray[3]-settingdata4);
+              config.data.datasets[4].data.push(recieveArray[4]-settingdata5);
 
             }
             else{
-              config.data.datasets[0].data.push(recieveArray[0]);
-              config.data.datasets[1].data.push(recieveArray[1]);
-              config.data.datasets[2].data.push(recieveArray[2]);
-              config.data.datasets[3].data.push(recieveArray[3]);
-              config.data.datasets[4].data.push(recieveArray[4]);
+              config.data.datasets[0].data.push(recieveArray[0]-settingdata1);
+              config.data.datasets[1].data.push(recieveArray[1]-settingdata2);
+              config.data.datasets[2].data.push(recieveArray[2]-settingdata3);
+              config.data.datasets[3].data.push(recieveArray[3]-settingdata4);
+              config.data.datasets[4].data.push(recieveArray[4]-settingdata5);
 
           }
             window.myLine.update();

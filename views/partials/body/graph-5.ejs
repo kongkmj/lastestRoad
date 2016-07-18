@@ -101,6 +101,7 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
+var settingdata5 = parseInt("<%=data2.rule005%>");
 var socket = io.connect("http://localhost:3000");
 var audio = new Audio();
 audio.src='/audio/alert.mp3';
@@ -115,7 +116,7 @@ socket.on('news',function (alaram,dbprevData) {
 
   for(var i=0;i<20;i++){
     config.data.labels[i]=(dbprevData[i].rectime);
-    config.data.datasets[0].data[i]=(dbprevData[i].beacon005);
+    config.data.datasets[0].data[i]=(dbprevData[i].beacon005-settingdata5);
     //config.data.datasets[1].data[i]=(dbprevData[i].beacon005);
     //config.data.datasets[2].data[i]=(dbprevData[i].beacon003);
     //config.data.datasets[3].data[i]=(dbprevData[i].beacon004);
@@ -154,7 +155,7 @@ socket.on('news',function (alaram,dbprevData) {
 
 
 socket.on('chat message',function (recieveArray,alaram) {
-  console.log("chat message: ",recieveArray[0],alaram);
+  console.log("chat message: ",recieveArray[4],alaram);
   console.log("알람"+alaram);
 
 

@@ -41,7 +41,7 @@
 
   <div>
     <h5>
-      <form id="ruleform1" name="ruleform2" method="POST" action="/input1">
+      <form id="ruleform1" name="ruleform1" method="POST" action="/input1">
       기준치 :
       <input type ="text"  id="range1" name="range1" value=""placeholder="<%=data_1.range001%>
       "/>
@@ -51,10 +51,14 @@
   <script>
   var socket = io.connect("http://localhost:3000");
     //var dao = "<%=data_1.range001%>"
-    $('#std1').click(function () {
+  socket.on('email1',function () {
       socket.emit('standardData');
+  })
+  $('#std1').click(function () {
       ruleform1.submit();
-    })
+  })
+
+
   </script>
   </form>
 
@@ -63,45 +67,46 @@
   </div>
 
   <div >
-  <h5><b>(2)번 감지기</b></h5>
+    <h5><b>(2)번 감지기</b></h5>
 
-  <form id="standardform2" name="standardform2" method="POST" action="/input2">
-  <h5>센서 세팅:
-  <input type ="checkbox" style="width:25px;height:25px;" id="ruleid2" name="ruleid2" value="on" onclick="stsubmit2()"/>세팅값 적용
-  <i class=" fa fa-long-arrow-right"></i>
-  <script>
-    function stsubmit2() {
-        standardform2.submit();
-    }
-  </script>
-  </form>
-  <%= data_2.rule002 %>
-  </h5>
-  <div id="test">
+    <form id="standardform2" name="standardform2" method="POST" action="/input2">
+    <h5>센서 세팅:
+    <input type ="checkbox" style="width:25px;height:25px;" id="ruleid2" name="ruleid2" value="on" onclick="stsubmit2()"/>세팅값 적용
+    <i class=" fa fa-long-arrow-right"></i>
+    <script>
+      function stsubmit2() {
+          standardform2.submit();
+      }
+    </script>
+    </form>
+    <%= data_2.rule002 %>
+    </h5>
+    <div id="test">
 
-  </div>
+    </div>
 
-  <div class="form-group">
+    <div class="form-group">
 
-    <div>
-      <h5>
-        <form id="ruleform2" name="ruleform2" method="POST" action="/input2">
-        기준치 :
-        <input type ="text"  id="range2" name="range2" value=""placeholder="<%=data_2.range002%>
-        "/>
-        <button id="std2">적용 </button>
-      </div>
-      </h5>
-      <script>
-      var socket = io.connect("http://localhost:3000");
-        //var dao = "<%=data_1.range001%>"
-        $('#std2').click(function () {
-          socket.emit('standardData');
-          ruleform2.submit();
-        })
-      </script>
-      </script>
-      </form>
+      <div>
+        <h5>
+          <form id="ruleform2" name="ruleform2" method="POST" action="/input2">
+          기준치 :
+          <input type ="text"  id="range2" name="range2" value="" placeholder="<%=data_2.range002%>
+          "/>
+          <button id="std2">적용 </button>
+        </div>
+        </h5>
+        <script>
+        var socket = io.connect("http://localhost:3000");
+          //var dao = "<%=data_1.range001%>"
+          socket.on('email2',function () {
+              socket.emit('standardData');
+          })
+          $('#std2').click(function () {
+              ruleform2.submit();
+          })
+        </script>
+        </form>
 
 
       </div>
@@ -141,9 +146,11 @@
           <script>
           var socket = io.connect("http://localhost:3000");
             //var dao = "<%=data_1.range001%>"
+            socket.on('email3',function () {
+                socket.emit('standardData');
+            })
             $('#std3').click(function () {
-              socket.emit('standardData');
-              ruleform3.submit();
+                ruleform3.submit();
             })
           </script>
           </form>
@@ -188,9 +195,11 @@
           <script>
           var socket = io.connect("http://localhost:3000");
             //var dao = "<%=data_1.range001%>"
+            socket.on('email4',function () {
+                socket.emit('standardData');
+            })
             $('#std4').click(function () {
-              socket.emit('standardData');
-              ruleform4.submit();
+                ruleform4.submit();
             })
           </script>
           </form>
@@ -233,9 +242,11 @@
             <script>
             var socket = io.connect("http://localhost:3000");
               //var dao = "<%=data_1.range001%>"
+              socket.on('email5',function () {
+                  socket.emit('standardData');
+              })
               $('#std5').click(function () {
-                socket.emit('standardData');
-                ruleform5.submit();
+                  ruleform5.submit();
               })
             </script>
             </form>

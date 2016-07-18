@@ -26,16 +26,14 @@ var alaram=""; // 알람을 담을 그릇
 var intervalmessage; // 클라이언트 주기버튼 메시지를 담을 변수
 var standardData;
 
-var rangedata1;
-var rangedata2;
-var rangedata3;
-var rangedata4;
-var rangedata5;
+var rangedata = new Array(5);
+
+
 
 var rcrule = new Array(5); // 디바이스로부터 받은 기준치
 var rcinterval ; // 디바이스로 부터 받은 주기
 
-
+var reccount=0;
 /*
   reccount+=1;
   console.log("카운틐ㄴ튼 "+reccount);
@@ -49,7 +47,7 @@ var dbprevData = new Array(20); //역순으로 데이터를 찾기에 순서를 
 var net = require('net');
 var server = net.createServer(function (socket2) {
 
-var reccount;
+
 
   
 
@@ -57,17 +55,25 @@ var reccount;
   io.on('connection',function (socket) {
     socket.on('intervalEV',function (message) {
       intervalmessage=message;
-      console.log("버튼눌러 받은 멧히지: "+intervalmessage);
-      socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+message+"b");
+      
+      socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+message+"b");
     });
-    socket.on('standardData',function (std) {
-      console.log("버튼눌러 받은 멧히지: "+intervalmessage);
-      console.log("이ㅏ거봐봐:"+rangedata1);
-      socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
-    })
+   
 
   });
 
+
+   
+
+   io.on('connection',function (socket) {
+    socket.on('standardData',function (std) {
+
+      
+      socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
+    })
+   
+
+  });
 
 
   //client와 접속이 끊겻을때
@@ -79,7 +85,7 @@ var reccount;
   });
   socket2.on('error',function (err) {
 
-    console.log(err);
+    //console.log(err);
   });
 
   console.log(socket2.address().address+"connected");
@@ -175,33 +181,35 @@ rcinterval = d026;
   });
 
 
-/*
+
 if(data){
 
 //디바이스에서 보낸 민감도와 다를경우
-if(rcrule[0]!=rangedata1){
-  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+if(rcrule[0]!=rangedata[0]){
+  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
 }
-if(rcrule[1]!=rangedata2){
-  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+if(rcrule[1]!=rangedata[1]){
+  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
 }
-if(rcrule[2]!=rangedata3){
-  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+if(rcrule[2]!=rangedata[2]){
+  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
 }
-if(rcrule[3]!=rangedata4){
-  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+if(rcrule[3]!=rangedata[3]){
+  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
 }
-if(rcrule[4]!=rangedata5){
-  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+if(rcrule[4]!=rangedata[4]){
+  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
 }
 
 //디바이스에서 보낸 주기와 다를 경우
 if(rcinterval!=intervalmessage){
-  socket2.write("a"+rangedata1+","+rangedata2+","+rangedata3+","+rangedata4+","+rangedata5+","+intervalmessage+"b");
+  socket2.write("a"+rangedata[0]+","+rangedata[1]+","+rangedata[2]+","+rangedata[3]+","+rangedata[4]+","+intervalmessage+"b");
 }
 
 }
-*/
+
+
+
 /** 데이터 확인 로그 **/
 
 
@@ -405,40 +413,46 @@ if(noti005==1){
 
 
   // 서버 -> 클라이언트 이벤트 (수신데이터,알람데이터)
+
 io.emit('chat message',parsingdata,alaram);
   });
-
+  
+//test
+/*
+io.emit('chat message',recieveArray,parsingdata,alaram);
+  });
+*/
 
 
   rule001.find({}).sort('-createdAt').exec(function (err, r001) {
 
       rule_001=r001[0];
       if(rule_001==undefined){
-      rule_001={rule001:"100",range001:"매우민감"};
+      rule_001={rule001:"10",range001:"10"};
       }
       rule002.find({}).sort('-createdAt').exec(function (err, r002) {
 
           rule_002=r002[0];
           if(rule_002==undefined){
-          rule_002={rule002:"100",range002:"매우민감"};
+          rule_002={rule002:"10",range002:"10"};
           }
           rule003.find({}).sort('-createdAt').exec(function (err, r003) {
 
               rule_003=r003[0];
               if(rule_003==undefined){
-              rule_003={rule003:"100",range003:"매우민감"};
+              rule_003={rule003:"10",range003:"10"};
               }
               rule004.find({}).sort('-createdAt').exec(function (err, r004) {
 
                   rule_004=r004[0];
                   if(rule_004==undefined){
-                  rule_004={rule004:"100",range004:"매우민감"};
+                  rule_004={rule004:"10",range004:"10"};
                   }
                   rule005.find({}).sort('-createdAt').exec(function (err, r005) {
 
                       rule_005=r005[0];
                       if(rule_005==undefined){
-                      rule_005={rule005:"100",range005:"매우민감"};
+                      rule_005={rule005:"10",range005:"10"};
                       }
                 });
             });
@@ -553,6 +567,9 @@ app.get('/',function (req,res) {
 
 
 app.get('/input',function (req,res) {
+
+
+
   rule001.find({}).sort('-createdAt').exec(function (err, r001) {
 
       rule002.find({}).sort('-createdAt').exec(function (err, r002) {
@@ -571,19 +588,19 @@ app.get('/input',function (req,res) {
                               rule_005=r005[0];
 
                               if(rule_001==undefined){
-                                rule_001={rule001:"100",range001:"매우민감"};
+                                rule_001={rule001:"10",range001:"10"};
                               }
                               if(rule_002==undefined){
-                                rule_002={rule002:"100",range002:"매우민감"};
+                                rule_002={rule002:"10",range002:"10"};
                               }
                               if(rule_003==undefined){
-                                rule_003={rule003:"100",range003:"매우민감"};
+                                rule_003={rule003:"10",range003:"10"};
                               }
                               if(rule_004==undefined){
-                                rule_004={rule004:"100",range004:"매우민감"};
+                                rule_004={rule004:"10",range004:"10"};
                               }
                               if(rule_005==undefined){
-                                rule_005={rule005:"100",range005:"매우민감"};
+                                rule_005={rule005:"10",range005:"10"};
                               }
 
 
@@ -604,27 +621,33 @@ app.get('/input',function (req,res) {
 // (1)
 app.post('/input1',function (req,res) {
   var ruledata;
-
+  
   if(req.body.ruleid1=="on"){
-    ruledata = data_002;
+    ruledata = data_001;
   }
   else{
     ruledata=rule_001.rule001;
   }
   if(req.body.range1==undefined){
-    rangedata1= rule_001.range001;
+    rangedata[0]= rule_001.range001;
   }
   else{
-    rangedata1=req.body.range1;
+    rangedata[0]=req.body.range1;
   }
   var log1 = new rule001({
     rule001:ruledata,
-    range001:rangedata1
+    range001:rangedata[0]
   });
-  log1.save(function (err,log2) {
+  log1.save(function (err,log1) {
+    console.log(log1);
   });
-  //post값
-  console.log("post 값 :"+rangedata1);
+
+ 
+
+   io.emit('email1');
+    
+  
+   console.log(rangedata[0]);
   res.redirect('/input');
 });
 
@@ -639,17 +662,19 @@ app.post('/input2',function (req,res) {
     ruledata=rule_002.rule002;
   }
   if(req.body.range2==undefined){
-    rangedata2= rule_002.range002;
+    rangedata[1]= rule_002.range002;
   }
   else{
-    rangedata2=req.body.range2;
+    rangedata[1]=req.body.range2;
   }
   var log2 = new rule002({
     rule002:ruledata,
-    range002:rangedata2
+    range002:rangedata[1]
   });
   log2.save(function (err,log2) {
+
   });
+   io.emit('email2');
   res.redirect('/input');
 });
 
@@ -664,17 +689,18 @@ app.post('/input3',function (req,res) {
     ruledata=rule_003.rule003;
   }
   if(req.body.range3==undefined){
-    rangedata3= rule_003.range003;
+    rangedata[2]= rule_003.range003;
   }
   else{
-    rangedata3=req.body.range3;
+    rangedata[2]=req.body.range3;
   }
   var log3 = new rule003({
     rule003:ruledata,
-    range003:rangedata3
+    range003:rangedata[2]
   });
   log3.save(function (err,log3) {
   });
+   io.emit('email3');
   res.redirect('/input');
 });
 // (4)
@@ -688,17 +714,18 @@ app.post('/input4',function (req,res) {
     ruledata=rule_004.rule004;
   }
   if(req.body.range4==undefined){
-    rangedata4= rule_004.range004;
+    rangedata[3]= rule_004.range004;
   }
   else{
-    rangedata4=req.body.range4;
+    rangedata[3]=req.body.range4;
   }
   var log4 = new rule004({
     rule004:ruledata,
-    range004:rangedata4
+    range004:rangedata[3]
   });
   log4.save(function (err,log4) {
   });
+   io.emit('email4');
   res.redirect('/input');
 });
 
@@ -712,17 +739,18 @@ app.post('/input5',function (req,res) {
     ruledata=rule_005.rule005;
   }
   if(req.body.range5==undefined){
-    rangedata5= rule_005.range005;
+    rangedata[4]= rule_005.range005;
   }
   else{
-    rangedata5=req.body.range5;
+    rangedata[4]=req.body.range5;
   }
   var log5 = new rule005({
     rule005:ruledata,
-    range005:rangedata5
+    range005:rangedata[4]
   });
   log5.save(function (err,log5) {
   });
+   io.emit('email5');
   res.redirect('/input');
 });
 
@@ -781,15 +809,26 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
     //console.log(dbprevData[1].beacon001);
 
   alaram1.findOne({id:1}).sort('-createdAt').exec(function (err,a) {
+      rule001.find({}).sort('-createdAt').exec(function (err, r001) {
+        rule002.find({}).sort('-createdAt').exec(function (err, r002) {
+          rule003.find({}).sort('-createdAt').exec(function (err, r003) {
+            rule004.find({}).sort('-createdAt').exec(function (err, r004) {
+              rule005.find({}).sort('-createdAt').exec(function (err, r005) {
+                  rule_001=r001[0];
+                  rule_002=r002[0];
+                  rule_003=r003[0];
+                  rule_004=r004[0];
+                  rule_005=r005[0];
 
-
-
-                  res.render("realtimechart-0", {data3:a});
-
+                  res.render("realtimechart-0", {data1:rule_001,data2:rule_002,data3:rule_003,data4:rule_004,data5:rule_005,data6:a});
+             });
+            });
+          });
+        });
       });
     });
+  });
 });
-
 
 // (1)
 app.get('/realtimechart-1',function (req,res) {
@@ -828,7 +867,7 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
       rule001.find({}).sort('-createdAt').exec(function (err, r001) {
           rule_001=r001[0];
           if(rule_001==undefined){
-            rule_001={rule001:"100",range001:"매우민감"};
+            rule_001={rule001:"10",range001:"10"};
           }
           beacon001.find({}).sort('-createdAt').exec(function (err, bc001) {
                 if (err) return res.json({success: false, message: err});
@@ -876,7 +915,7 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
   rule002.find({}).sort('-createdAt').exec(function (err, r002) {
       rule_002=r002[0];
       if(rule_002==undefined){
-        rule_002={rule002:"100",range002:"매우민감"};
+        rule_002={rule002:"10",range002:"10"};
       }
       beacon002.find({}).sort('-createdAt').exec(function (err, bc002) {
             if (err) return res.json({success: false, message: err});
@@ -921,7 +960,7 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
   rule003.find({}).sort('-createdAt').exec(function (err, r003) {
       rule_003=r003[0];
       if(rule_003==undefined){
-        rule_003={rule003:"100",range003:"매우민감"};
+        rule_003={rule003:"10",range003:"10"};
       }
       beacon003.find({}).sort('-createdAt').exec(function (err, bc003) {
             if (err) return res.json({success: false, message: err});
@@ -966,7 +1005,7 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
   rule004.find({}).sort('-createdAt').exec(function (err, r004) {
       rule_004=r004[0];
       if(rule_004==undefined){
-        rule_004={rule004:"100",range004:"매우민감"};
+        rule_004={rule004:"10",range004:"10"};
       }
       beacon004.find({}).sort('-createdAt').exec(function (err, bc004) {
             if (err) return res.json({success: false, message: err});
@@ -1012,7 +1051,7 @@ beaconData.find({}).limit(20).sort({$natural:-1}).exec(function (err,rcdata) {
   rule005.find({}).sort('-createdAt').exec(function (err, r005) {
       rule_005=r005[0];
       if(rule_005==undefined){
-        rule_005={rule005:"100",range005:"매우민감"};
+        rule_005={rule005:"10",range005:"10"};
       }
       beacon005.find({}).sort('-createdAt').exec(function (err, bc005) {
             if (err) return res.json({success: false, message: err});
