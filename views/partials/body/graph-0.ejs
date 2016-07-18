@@ -60,7 +60,7 @@ var settingdata2 = parseInt("<%=data2.rule002%>");
 var settingdata3 = parseInt("<%=data3.rule003%>");
 var settingdata4 = parseInt("<%=data4.rule004%>");
 var settingdata5 = parseInt("<%=data5.rule005%>");
-var socket = io.connect("http://localhost:3000");
+var socket = io.connect("http://52.78.82.199:80");
 var audio = new Audio();
 audio.src='/audio/alert.mp3';
 var alert_cnt=0;
@@ -71,7 +71,6 @@ var size = $("#size");
 var text1 = $("#text");
 var alaram1 = $("#help");
 
-console.log("스크립트 로드");
 
 
 
@@ -82,28 +81,23 @@ var message;
 $('#interval1').click(function () {
   message="001";
   socket.emit('intervalEV',message);
-  console.log('누름');
 });
 
 $('#interval2').click(function () {
   message="002";
   socket.emit('intervalEV',message);
-  console.log('누름');
 });
 $('#interval3').click(function () {
   message="003";
   socket.emit('intervalEV',message);
-  console.log('누름');
 });
 $('#interval4').click(function () {
   message="004";
   socket.emit('intervalEV',message);
-  console.log('누름');
 });
 $('#interval5').click(function () {
   message="005";
   socket.emit('intervalEV',message);
-  console.log('누름');
 });
 
 //////////여기야
@@ -112,10 +106,6 @@ $('#interval5').click(function () {
 
 
 socket.on('news',function (alaram,dbprevData) {
-  console.log(alaram);
-  //console.log(dbprevData);
-  //console.log(config.data.datasets[0].data[0]);
-  console.log("소켓 이벤트 발생");
 
   for(var i=0;i<20;i++){
     config.data.labels[i]=(dbprevData[i].rectime);
@@ -154,13 +144,10 @@ socket.on('news',function (alaram,dbprevData) {
   audio.pause();
   }
 
-  //console.log(data4);
 })
 
 
 socket.on('chat message',function (recieveArray,alaram) {
-  console.log("chat message: ",recieveArray[0],alaram);
-  console.log("알람"+alaram);
 
 
 
@@ -331,12 +318,9 @@ socket.on('chat message',function (recieveArray,alaram) {
 
     var hasChart = false;
     var initChart = function(){
-      console.log("그래프 로드1");
       var ctx = document.getElementById("canvas").getContext("2d");
       window.myLine = new Chart(ctx, config);
-      console.log("그래프 로드2");
       hasChart = true;
-      //  console.log(config.data.datasets[0]);
     };
 
 
